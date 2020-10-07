@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/wi_date"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintEnd_toStartOf="@+id/wi_day"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Date " />
+
+    <TextView
+        android:id="@+id/wi_day"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Day of week" />
+
+    <TextView
+        android:id="@+id/wi_temperature"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toStartOf="@+id/wli_thumnail"
+        app:layout_constraintStart_toStartOf="@+id/wi_date"
+        app:layout_constraintTop_toBottomOf="@+id/wi_date"
+        tools:text="Temp" />
+
+    <TextView
+        android:id="@+id/wi_weather"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toStartOf="@+id/wi_temperature"
+        app:layout_constraintTop_toBottomOf="@+id/wi_temperature"
+        tools:text="Weather description" />
+
+    <TextView
+        android:id="@+id/wi_wind"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toStartOf="@+id/wi_weather"
+        app:layout_constraintTop_toBottomOf="@+id/wi_weather"
+        tools:text="Wind:" />
+
+
+    <TextView
+        android:id="@+id/wi_sunrise"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toStartOf="@+id/wi_wind"
+        app:layout_constraintTop_toBottomOf="@+id/wi_wind"
+        tools:text="Sunrise time:" />
+
+    <TextView
+        android:id="@+id/wi_sunset"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toStartOf="@+id/wi_sunrise"
+        app:layout_constraintTop_toBottomOf="@+id/wi_sunrise"
+        tools:text="Sunset time:" />
+
+    <ImageView
+        android:id="@+id/wli_thumnail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_weight="2"
+        android:contentDescription="@string/weather_image_description"
+        android:scaleType="fitStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wi_day"
+        app:srcCompat="@drawable/placeholder" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
