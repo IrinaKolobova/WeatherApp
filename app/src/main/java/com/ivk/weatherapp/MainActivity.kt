@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.content_main.*
 
+
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
