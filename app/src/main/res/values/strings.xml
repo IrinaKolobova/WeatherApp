@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Weather App</string>
     <string name="weather_image_description">Downloaded weather description</string>
+    <string name="title_activity_detailed_weather">DetailedWeatherActivity</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
 </resources>

@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetOpen
         Log.d(TAG, "onCreate starts")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
         val url = createUri(OPEN_WEATHER_MAP_BASE_URL, latitude,
                                  longitude, units,
                                 "hourly,minutely", OPEN_WEATHER_MAP_KEY)
