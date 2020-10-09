@@ -1,5 +1,7 @@
 package com.ivk.weatherapp
 
+import android.net.Uri
+import android.nfc.NdefRecord.createUri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +11,11 @@ import kotlinx.android.synthetic.main.content_main.*
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetOpenWeatherJsonData.OnDataAvailable {
-    val OPEN_WEATHER_MAP_URL: String = "https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=hourly,minutely&appid="
     val OPEN_WEATHER_MAP_KEY: String = "b9331c3f8b9f662176fbd39baabf3f9a"
+    val OPEN_WEATHER_MAP_BASE_URL: String = "https://api.openweathermap.org/data/2.5/onecall"
+    var latitude: String = "33.441792"
+    var longitude: String = "-94.037689"
+    var units = "imperial"
 
 //    val testCity: String = "San Francisco"
 //    var index: Int = 0
@@ -24,10 +29,25 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetOpen
         setContentView(R.layout.activity_main)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
+        val url = createUri(OPEN_WEATHER_MAP_BASE_URL, latitude,
+                                 longitude, units,
+                                "hourly,minutely", OPEN_WEATHER_MAP_KEY)
 
-        val url = "$OPEN_WEATHER_MAP_URL$OPEN_WEATHER_MAP_KEY"
         val getRawData = GetRawData(this)
         getRawData.execute(url)
+    }
+
+    private fun createUri(baseURL: String, latitude: String,
+                          longitude: String, units: String,
+                          exclude: String, key: String) : String {
+        return Uri.parse(baseURL).
+                buildUpon().
+                appendQueryParameter("lat", latitude).
+                appendQueryParameter("lon", longitude).
+                appendQueryParameter("units", units).
+                appendQueryParameter("exclude", exclude).
+                appendQueryParameter("appid", key).
+                build().toString()
     }
 
     override fun onDownloadComplete(data: String, status: DownloadStatus) {
