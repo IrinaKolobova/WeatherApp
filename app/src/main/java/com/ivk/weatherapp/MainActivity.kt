@@ -46,6 +46,12 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
 
     override fun onItemClick(view: View, position: Int) {
         Log.d(TAG, "onItemClick: normal tap at position $position")
+        val weatherData = weatherRVAdapter.getWeatherData(position)
+        if (weatherData != null) {
+            val intent = Intent(this, DetailedWeatherActivity::class.java)
+            intent.putExtra(WEATHER_DATA_TRANSFER, weatherData)
+            startActivity(intent)
+        }
     }
 
     override fun onItemLongClick(view: View, position: Int) {
