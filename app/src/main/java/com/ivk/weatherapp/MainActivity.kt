@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.content_main.*
 
 private const val TAG = "MainActivity"
+private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
 
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetOpenWeatherJsonData.OnDataAvailable {
     val OPEN_WEATHER_MAP_KEY: String = "b9331c3f8b9f662176fbd39baabf3f9a"
@@ -29,10 +30,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetOpen
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        recycler_view.layoutManager = LinearLayoutManager(this) //(?) LINEARLAYOUT??
+        recycler_view.adapter = weatherRVAdapter
+
         val url = createUri(OPEN_WEATHER_MAP_BASE_URL, latitude,
                                  longitude, units,
                                 "hourly,minutely", OPEN_WEATHER_MAP_KEY)
-
         val getRawData = GetRawData(this)
         getRawData.execute(url)
     }
@@ -57,12 +60,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete, GetOpen
         } else {
             Log.d(TAG, "onDownloadComplete failed: status is $status, error message is $data")
         }
-
-
     }
 
     override fun onDataAvailable(data: List<WeatherData>) {
         Log.d(TAG, "onDataAvailable called, data is $data")
+        weatherRVAdapter.loadNewData(data)
     }
 
     override fun onError(exception: Exception) {
