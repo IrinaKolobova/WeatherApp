@@ -1,8 +1,7 @@
 package com.ivk.weatherapp
 
+import android.content.Intent
 import android.net.Uri
-import android.nfc.NdefRecord.createUri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,7 +11,7 @@ import kotlinx.android.synthetic.main.content_main.*
 private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
 
-class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
+class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
     GetOpenWeatherJsonData.OnDataAvailable,
     RecyclerItemClickListener.OnRecyclerClickListener {
 
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         Log.d(TAG, "onCreate starts")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        activateToolbar(false)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
         recycler_view.addOnItemTouchListener(RecyclerItemClickListener(this, recycler_view, this))

@@ -7,7 +7,6 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.text.FieldPosition
 
 private const val TAG = "RecyclerItemClickListen"
 
