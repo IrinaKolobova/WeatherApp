@@ -5,12 +5,14 @@ import java.io.IOException
 import java.io.ObjectStreamException
 import java.io.Serializable
 
-class WeatherData (var latitude: String, var longitude: String, var date: String, var day: Int,
-                   var currentTemp: String, var dayTemp: String, var nightTemp: String,
-                   var description: String, var windSpeed: String, var sunrise: String,
-                   var sunset: String, var icon: String) : Serializable{
+class WeatherData(
+    var latitude: String, var longitude: String, var date: String, var day: Int,
+    var currentTemp: String, var dayTemp: String, var nightTemp: String,
+    var description: String, var windSpeed: String, var sunrise: String,
+    var sunset: String, var icon: String
+) : Serializable {
 
-    companion object{
+    companion object {
         private const val serialVersionUID = 1L
     }
 
@@ -41,7 +43,6 @@ class WeatherData (var latitude: String, var longitude: String, var date: String
         latitude = inStream.readUTF()
         longitude = inStream.readUTF()
         date = inStream.readUTF()
-        //day = inStream.readUTF()
         currentTemp = inStream.readUTF()
         dayTemp = inStream.readUTF()
         nightTemp = inStream.readUTF()
