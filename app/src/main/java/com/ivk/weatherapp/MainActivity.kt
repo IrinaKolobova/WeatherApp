@@ -37,11 +37,12 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
         recycler_view.addOnItemTouchListener(RecyclerItemClickListener(this, recycler_view, this))
         recycler_view.adapter = weatherRVAdapter
 
-        val url = createUri(OPEN_WEATHER_MAP_BASE_URL, latitude,
+        val openWeatherUrl = createOpenWeatherUri(OPEN_WEATHER_MAP_BASE_URL, latitude,
                                  longitude, units,
                                 "hourly,minutely", OPEN_WEATHER_MAP_KEY)
         val getRawData = GetRawData(this)
-        getRawData.execute(url)
+        getRawData.execute(openWeatherUrl)
+
     }
 
     override fun onItemClick(view: View, position: Int) {
@@ -58,9 +59,9 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
         Log.d(TAG, "onItemLongClick: long tap at position $position")
     }
 
-    private fun createUri(baseURL: String, latitude: String,
-                          longitude: String, units: String,
-                          exclude: String, key: String) : String {
+    private fun createOpenWeatherUri(baseURL: String, latitude: String,
+                                    longitude: String, units: String,
+                                    exclude: String, key: String) : String {
         return Uri.parse(baseURL).
                 buildUpon().
                 appendQueryParameter("lat", latitude).
@@ -70,6 +71,7 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
                 appendQueryParameter("appid", key).
                 build().toString()
     }
+
 
     override fun onDownloadComplete(data: String, status: DownloadStatus) {
         if (status == DownloadStatus.OK) {

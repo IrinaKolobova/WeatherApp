@@ -11,27 +11,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/wli_thumbnail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Current Temperature"/>
+        tools:text="Current Temperature" />
 
     <TextView
-        android:id="@+id/wli_day"
+        android:id="@+id/wli_temp_unit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintEnd_toStartOf="@+id/wli_thumbnail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wli_temperature"
-        tools:text="Day of week" />
+        android:text="@string/fahrenheit"
+        app:layout_constraintBaseline_toBaselineOf="@+id/wli_temperature"
+        app:layout_constraintStart_toEndOf="@+id/wli_temperature"
+        tools:text="F/C"/>
+
 
     <TextView
         android:id="@+id/wli_date"
@@ -43,14 +38,13 @@
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/wli_thumbnail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wli_day"
+        app:layout_constraintTop_toBottomOf="@+id/wli_temperature"
         tools:text="Date" />
 
     <ImageView
         android:id="@+id/wli_thumbnail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/weather_image_description"

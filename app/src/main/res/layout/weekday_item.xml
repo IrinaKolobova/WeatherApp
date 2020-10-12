@@ -12,22 +12,21 @@
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintEnd_toStartOf="@+id/wi_day"
+        app:layout_constraintBaseline_toBaselineOf="@+id/wi_day"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="Date" />
 
     <TextView
         android:id="@+id/wi_day"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wi_date"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Day of week" />
 
@@ -36,15 +35,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_weight="1"
-        app:layout_constraintEnd_toStartOf="@+id/wi_thumbnail"
         app:layout_constraintStart_toStartOf="@+id/wi_date"
-        app:layout_constraintTop_toBottomOf="@+id/wi_date"
+        app:layout_constraintTop_toBottomOf="@+id/wi_day"
         tools:text="Temp" />
+
+    <TextView
+        android:id="@+id/wi_temp_unit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/fahrenheit"
+        app:layout_constraintBaseline_toBaselineOf="@+id/wi_temperature"
+        app:layout_constraintStart_toEndOf="@+id/wi_temperature"
+        tools:text="F/C"/>
 
     <TextView
         android:id="@+id/wi_description"
@@ -56,36 +62,65 @@
         app:layout_constraintTop_toBottomOf="@+id/wi_temperature"
         tools:text="Weather description" />
 
+
+    <TextView
+        android:id="@+id/wi_tv_wind"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/wind"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintBaseline_toBaselineOf="@+id/wi_wind"
+        app:layout_constraintStart_toStartOf="@+id/wi_description" />
+
     <TextView
         android:id="@+id/wi_wind"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintStart_toStartOf="@+id/wi_description"
+        app:layout_constraintStart_toEndOf="@+id/wi_tv_wind"
         app:layout_constraintTop_toBottomOf="@+id/wi_description"
-        tools:text="Wind:" />
+        tools:text="wind data" />
 
+    <TextView
+        android:id="@+id/wi_tv_sunrise"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/sunrise_time"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintBaseline_toBaselineOf="@+id/wi_sunrise"
+        app:layout_constraintStart_toStartOf="@+id/wi_tv_wind" />
 
     <TextView
         android:id="@+id/wi_sunrise"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintStart_toStartOf="@+id/wi_wind"
+        app:layout_constraintStart_toEndOf="@+id/wi_tv_sunrise"
         app:layout_constraintTop_toBottomOf="@+id/wi_wind"
-        tools:text="Sunrise time:" />
+        tools:text="sunrise data" />
+
+    <TextView
+        android:id="@+id/wi_tv_sunset"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/sunset_time"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintBaseline_toBaselineOf="@+id/wi_sunset"
+        app:layout_constraintStart_toStartOf="@+id/wi_tv_sunrise" />
 
     <TextView
         android:id="@+id/wi_sunset"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintStart_toStartOf="@+id/wi_sunrise"
+        app:layout_constraintStart_toEndOf="@+id/wi_tv_sunset"
         app:layout_constraintTop_toBottomOf="@+id/wi_sunrise"
-        tools:text="Sunset time:" />
+        tools:text="sunset data" />
 
     <ImageView
         android:id="@+id/wi_thumbnail"

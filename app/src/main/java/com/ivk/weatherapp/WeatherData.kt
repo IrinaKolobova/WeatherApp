@@ -4,7 +4,6 @@ import android.util.Log
 import java.io.IOException
 import java.io.ObjectStreamException
 import java.io.Serializable
-import java.lang.ClassCastException
 
 class WeatherData (var latitude: String, var longitude: String, var date: String, var day: Int,
                    var currentTemp: String, var dayTemp: String, var nightTemp: String,
@@ -27,7 +26,6 @@ class WeatherData (var latitude: String, var longitude: String, var date: String
         out.writeUTF(latitude)
         out.writeUTF(longitude)
         out.writeUTF(date)
-        //out.writeUTF(day.toString())
         out.writeUTF(currentTemp)
         out.writeUTF(dayTemp)
         out.writeUTF(nightTemp)

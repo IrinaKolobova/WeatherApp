@@ -4,5 +4,10 @@
     <string name="title_activity_detailed_weather">DetailedWeatherActivity</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="sunrise_time">Sunrise time:</string>
+    <string name="sunset_time">Sunset time:</string>
+    <string name="wind">Wind:</string>
+    <string name="celsius">°C</string>
+    <string name="fahrenheit">°F</string>
 
 </resources>

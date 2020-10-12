@@ -10,11 +10,12 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "WeatherRVAdapter"
 class WeatherDataViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var temperature : TextView = view.findViewById(R.id.wli_temperature)
-    var day : TextView = view.findViewById(R.id.wli_day)
     var date : TextView = view.findViewById(R.id.wli_date)
     var thumbnail : ImageView = view.findViewById(R.id.wli_thumbnail)
 }
@@ -29,18 +30,16 @@ class WeatherRVAdapter(private var dailyWeatherDataList : List<WeatherData>) : R
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: WeatherDataViewHolder, position: Int) {
         val dayWeatherItem = dailyWeatherDataList[position]
+
         Log.d(TAG, "onBindViewHolder ${dayWeatherItem.day} -> $position")
+
         //Picasso.with(holder.thumbnail.context).load(dayWeatherItem.icon)
         Picasso.get().load(dayWeatherItem.icon)
             .error(R.drawable.placeholder)
             .placeholder(R.drawable.placeholder)
             .into(holder.thumbnail)
         holder.temperature.text = dayWeatherItem.dayTemp
-        holder.day.text = dayWeatherItem.day.toString()
-
-        // val currentTimestamp = System.currentTimeMillis()
-        holder.date.text = java.time.format.DateTimeFormatter.ISO_INSTANT
-            .format(java.time.Instant.ofEpochSecond(dayWeatherItem.date.toLong()))
+        holder.date.text = SimpleDateFormat("EEE, MMM d", Locale.ENGLISH).format(Date(dayWeatherItem.date.toLong()*1000))
     }
 
     override fun getItemCount(): Int {

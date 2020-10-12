@@ -23,7 +23,7 @@ class GetOpenWeatherJsonData(private val listener: OnDataAvailable) : AsyncTask<
             val currentTemp = jsonData.getJSONObject("current").getString("temp")
 
             val dailyArray = jsonData.getJSONArray("daily")
-            for (i in 0 until dailyArray.length()){ //(?) until dailyArray.length()-1
+            for (i in 0 until 7){ // until dailyArray.length()-1
                 val jsonWeatherData = dailyArray.getJSONObject(i)
                 val date = jsonWeatherData.getString("dt")
                 val day = i
