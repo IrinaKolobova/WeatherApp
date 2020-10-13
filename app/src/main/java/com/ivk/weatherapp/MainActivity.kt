@@ -1,26 +1,25 @@
 package com.ivk.weatherapp
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlin.collections.ArrayList
 
 private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
 
-class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
+class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     GetOpenWeatherJsonData.OnDataAvailable,
     RecyclerItemClickListener.OnRecyclerClickListener {
 
@@ -39,7 +38,7 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
         Log.d(TAG, "onCreate starts")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        activateToolbar(false)
+        setSupportActionBar(toolbar)
 
         setRecyclerView()
 
