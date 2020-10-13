@@ -9,7 +9,7 @@ class WeatherData(
     var latitude: String, var longitude: String, var date: String, var day: Int,
     var currentTemp: String, var dayTemp: String, var nightTemp: String,
     var description: String, var windSpeed: String, var sunrise: String,
-    var sunset: String, var icon: String
+    var sunset: String, var icon: String, var expandable: Boolean = false
 ) : Serializable {
 
     companion object {

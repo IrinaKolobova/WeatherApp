@@ -20,6 +20,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/weekday_item"/>
+    <include layout="@layout/weekday_details"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

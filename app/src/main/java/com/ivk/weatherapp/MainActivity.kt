@@ -1,11 +1,13 @@
 package com.ivk.weatherapp
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -39,18 +41,22 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
         setContentView(R.layout.activity_main)
         activateToolbar(false)
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
-        recycler_view.addOnItemTouchListener(RecyclerItemClickListener(this, recycler_view, this))
-        recycler_view.adapter = weatherRVAdapter
+        setRecyclerView()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
-        //requestAPI()
         Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
     }
 
+    private fun setRecyclerView() {
+        recycler_view.adapter = weatherRVAdapter
+        recycler_view.layoutManager = LinearLayoutManager(this)
+        recycler_view.addOnItemTouchListener(RecyclerItemClickListener(this, recycler_view, this))
+        recycler_view.setHasFixedSize(true)
+    }
+
     private fun requestAPI() {
-        Log.d(TAG, "requestAPI: latitude = $latitude, LONGITUDE = $longitude")
+        Log.d(TAG, "requestAPI: latitude = $latitude, longitude = $longitude")
         val openWeatherUrl = createOpenWeatherUri(
             OPEN_WEATHER_MAP_BASE_URL,
             latitude, longitude, units,
@@ -80,7 +86,7 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
                             applicationContext, "latitude: $latitude\n" +
                                     "longitude: $longitude", Toast.LENGTH_LONG
                         ).show()
-                        Log.d(TAG, "getLastLocation: LATITUDE = $latitude, LONGITUDE = $longitude")
+                        Log.d(TAG, "getLastLocation: latitude = $latitude, longitude = $longitude")
                         requestAPI()
                     }
                     Log.d(TAG, "getLastLocation: callback completed")
@@ -88,6 +94,7 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
             Log.d(TAG, "getLastLocation() completed")
         }
     }
+
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
@@ -99,12 +106,7 @@ class MainActivity : BaseActivity(), GetRawData.OnDownloadComplete,
 
     override fun onItemClick(view: View, position: Int) {
         Log.d(TAG, "onItemClick: normal tap at position $position")
-        val weatherData = weatherRVAdapter.getWeatherData(position)
-        if (weatherData != null) {
-            val intent = Intent(this, DetailedWeatherActivity::class.java)
-            intent.putExtra(WEATHER_DATA_TRANSFER, weatherData)
-            startActivity(intent)
-        }
+        //val weatherData = weatherRVAdapter.getWeatherData(position)
     }
 
     override fun onItemLongClick(view: View, position: Int) {

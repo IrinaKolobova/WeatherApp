@@ -9,5 +9,6 @@
     <string name="wind">Wind:</string>
     <string name="celsius">°C</string>
     <string name="fahrenheit">°F</string>
+    <string name="miles_per_hour">m/h</string>
 
 </resources>
