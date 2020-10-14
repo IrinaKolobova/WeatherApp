@@ -58,7 +58,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
 
         //getLocationName()
-        Log.d(TAG, "onCreate: cityName = $cityName, stateName = $stateName, countryName = $countryName"
+        Log.d(
+            TAG,
+            "onCreate: cityName = $cityName, stateName = $stateName, countryName = $countryName"
         )
         toolbar.title = cityName
     }
@@ -84,7 +86,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         Log.d(TAG, "getLastLocation: starts")
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d(TAG, "getLastLocation: calling requestPermission()1")
             requestPermission()
         } else {
             fusedLocationClient.lastLocation
@@ -101,11 +108,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                         Log.d(TAG, "getLastLocation: latitude = $latitude, longitude = $longitude")
                         requestAPI()
                     } else {
+                        Log.d(TAG, "getLastLocation: calling requestNewLocationData()1")
                         requestNewLocationData()
                     }
                 }
             Log.d(TAG, "getLastLocation: callback completed")
+
         }
+        Log.d(TAG, "getLastLocation: calling requestNewLocationData()2")
         requestNewLocationData()
         Log.d(TAG, "getLastLocation: completed")
     }
@@ -113,42 +123,48 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         Log.d(TAG, "requestNewLocationData: starts")
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             requestPermission()
-        } else {
-            Log.d(TAG, "requestNewLocationData: permission granted")
-            val locationRequest = LocationRequest()
-            locationRequest.priority = LocationRequest.PRIORITY_LOW_POWER
-            locationRequest.interval = 0
-            locationRequest.fastestInterval = 0
-            locationRequest.numUpdates = 1
-
-            //TODO: find a way to update latitude&longitude here
-            //val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-            //val client: SettingsClient = LocationServices.getSettingsClient(this)
-            //val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
-
-
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest, locationCallback,
-                Looper.myLooper()
-            )
-
-            //latitude = fusedLocationClient.lastLocation.toString()
-            Log.d(TAG, "requestNewLocationData: latitude = $latitude, longitude = $longitude")
-            requestAPI()
         }
+        Log.d(TAG, "requestNewLocationData: permission granted")
+        val locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
+
+        //TODO: find a way to update latitude&longitude here
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest, locationCallback,
+            Looper.myLooper()
+        )
+
+        //latitude = fusedLocationClient.lastLocation.toString()
+        Log.d(TAG, "requestNewLocationData: latitude = $latitude, longitude = $longitude")
+        requestAPI()
+
         Log.d(TAG, "requestNewLocationData: finished")
     }
 
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            val lastLocation: Location = locationResult.lastLocation
-            Log.d("Debug:","your last last location: "+ lastLocation.longitude.toString())
-            toolbar.title = "You Last Location is : Long: ${lastLocation.longitude} , Lat: ${lastLocation.latitude}"
-            cityName = getCityName(lastLocation.latitude,lastLocation.longitude)
+            var lastLocation: Location = locationResult.lastLocation
+            Log.d(TAG, "locationCallback: ${lastLocation.longitude}")
+            toolbar.title =
+                "You Last Location is : Long: ${lastLocation.longitude} , Lat: ${lastLocation.latitude}"
+            cityName = getCityName(lastLocation.latitude, lastLocation.longitude)
         }
         /*if (locationResult.locations.isNotEmpty()) {
             var lastLocation: Location = locationResult.lastLocation
@@ -192,10 +208,18 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     private fun requestPermission() {
         Log.d(TAG, "requestPermission: started")
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestPermissionCode)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            requestPermissionCode
+        )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == requestPermissionCode) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLastLocation()
@@ -243,15 +267,15 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
 
-    private fun getCityName(lat: Double,long: Double):String{
+    private fun getCityName(lat: Double, long: Double): String {
         //var cityName:String = ""
         //var countryName = ""
-        val geoCoder = Geocoder(this, Locale.getDefault())
-        val address = geoCoder.getFromLocation(lat,long,3)
+        var geoCoder = Geocoder(this, Locale.getDefault())
+        var address = geoCoder.getFromLocation(lat, long, 3)
 
         cityName = address.get(0).locality
         countryName = address.get(0).countryName
-        Log.d("Debug:","Your City: " + cityName + " ; your Country " + countryName)
+        Log.d("Debug:", "Your City: " + cityName + " ; your Country " + countryName)
         return cityName
     }
 
