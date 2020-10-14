@@ -10,5 +10,6 @@
     <string name="celsius">°C</string>
     <string name="fahrenheit">°F</string>
     <string name="miles_per_hour">m/h</string>
+    <string name="location_icon">location icon</string>
 
 </resources>
