@@ -101,10 +101,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                     if (location != null) {
                         latitude = location.latitude.toString()
                         longitude = location.longitude.toString()
-                        Toast.makeText(
-                            applicationContext, "latitude: $latitude\n" +
-                                    "longitude: $longitude", Toast.LENGTH_LONG
-                        ).show()
+
                         Log.d(TAG, "getLastLocation: latitude = $latitude, longitude = $longitude")
                         requestAPI()
                     } else {
