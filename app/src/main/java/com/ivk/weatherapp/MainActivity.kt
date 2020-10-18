@@ -3,7 +3,6 @@ package com.ivk.weatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
@@ -11,10 +10,10 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     private var cityName: String = " "
     private var stateName: String = " "
     private var countryName: String = " "
-
+    private lateinit var swipeLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate starts")
@@ -57,12 +56,19 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         getLastLocation()
         Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
 
-        //getLocationName()
         Log.d(
             TAG,
             "onCreate: cityName = $cityName, stateName = $stateName, countryName = $countryName"
         )
         toolbar.title = cityName
+
+        swipeLayout = findViewById(R.id.swipeContainer)
+        swipeLayout.setOnRefreshListener( {
+            val intent = intent
+            finish()
+            startActivity(intent)
+            swipeLayout.isRefreshing = false
+        })
     }
 
     private fun setRecyclerView() {
@@ -134,20 +140,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         locationRequest.fastestInterval = 0
         locationRequest.numUpdates = 1
 
-        //TODO: find a way to update latitude&longitude here
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-        val client: SettingsClient = LocationServices.getSettingsClient(this)
-        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
-
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.requestLocationUpdates(
             locationRequest, locationCallback,
             Looper.myLooper()
         )
 
-        //latitude = fusedLocationClient.lastLocation.toString()
         Log.d(TAG, "requestNewLocationData: latitude = $latitude, longitude = $longitude")
         requestAPI()
 
@@ -157,50 +155,13 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            var lastLocation: Location = locationResult.lastLocation
+            val lastLocation: Location = locationResult.lastLocation
             Log.d(TAG, "locationCallback: ${lastLocation.longitude}")
             toolbar.title =
                 "You Last Location is : Long: ${lastLocation.longitude} , Lat: ${lastLocation.latitude}"
             cityName = getCityName(lastLocation.latitude, lastLocation.longitude)
         }
-        /*if (locationResult.locations.isNotEmpty()) {
-            var lastLocation: Location = locationResult.lastLocation
-            Log.d("Debug:","your last last location: "+ lastLocation.longitude.toString())
-            toolbar.title = "You Last Location is : Long: ${lastLocation.longitude} , Lat: ${lastLocation.latitude}"
-            cityName = getCityName(lastLocation.latitude,lastLocation.longitude)
-        }*/
-        /*val location = locationResult.lastLocation
-        Log.e("location", location.toString())
-
-        latitude = locationResult.lastLocation.latitude.toString()
-        longitude = locationResult.lastLocation.longitude.toString()
-        Log.d(TAG, "onLocationResult: latitude = $latitude, longitude = $longitude")
-
-        val addresses: List<Address>?
-        val geoCoder = Geocoder(applicationContext, Locale.getDefault())
-        addresses = geoCoder.getFromLocation(
-            locationResult.lastLocation.latitude,
-            locationResult.lastLocation.longitude,
-            1
-        )
-        if (addresses != null && addresses.isNotEmpty()) {
-            val address: String = addresses[0].getAddressLine(0)
-            val city: String = addresses[0].locality
-            val state: String = addresses[0].adminArea
-            val country: String = addresses[0].countryName
-            val postalCode: String = addresses[0].postalCode
-            Log.e("location", "$address $city $state $postalCode $country")
-        }*/
     }
-
-    /*private fun onLocationResult(locationResult: LocationResult) {
-        Log.d(TAG, "locationCallback starts")
-        var lastLocation: Location = locationResult.lastLocation
-        latitude = lastLocation.latitude.toString()
-        longitude = lastLocation.longitude.toString()
-        Log.d(TAG, "locationCallback completed: latitude = $latitude, longitude = $longitude, lastLocation = $lastLocation")
-        //Toast.makeText(applicationContext, "latitude: $latitude \nlongitude: $longitude", Toast.LENGTH_LONG).show()
-    }*/
 
 
     private fun requestPermission() {
@@ -226,7 +187,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     override fun onItemClick(view: View, position: Int) {
         Log.d(TAG, "onItemClick: normal tap at position $position")
-        //val weatherData = weatherRVAdapter.getWeatherData(position)
     }
 
     override fun onItemLongClick(view: View, position: Int) {
@@ -265,10 +225,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
 
     private fun getCityName(lat: Double, long: Double): String {
-        //var cityName:String = ""
-        //var countryName = ""
-        var geoCoder = Geocoder(this, Locale.getDefault())
-        var address = geoCoder.getFromLocation(lat, long, 3)
+        val geoCoder = Geocoder(this, Locale.getDefault())
+        val address = geoCoder.getFromLocation(lat, long, 3)
 
         cityName = address.get(0).locality
         countryName = address.get(0).countryName
