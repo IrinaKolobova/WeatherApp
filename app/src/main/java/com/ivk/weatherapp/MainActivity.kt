@@ -23,10 +23,10 @@ import kotlinx.android.synthetic.main.content_main.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-//TODO: clean up
+//TODO: put all location related code on separate class
 //TODO: add settings
 //TODO: add option to select city and units
-//TODO: make detailed view opens when user click once
+//TODO: open detailed view when user click once
 
 private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
@@ -66,22 +66,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         swipeLayout = findViewById(R.id.swipeContainer)
         swipeLayout.setOnRefreshListener {
-            //TODO: make refresh prettier
-            //TODO: request new log&lat during refresh
-            val intent = intent
-            finish()
-            startActivity(intent)
-            //swipeLayout.isRefreshing = false
-
-            //this.recreate()                 // refresh list contents somehow
+            Log.d(TAG, "onCreate: refreshing layout")
+            getNewLocation()
             swipeLayout.isRefreshing = false
-            /*// To keep animation for 4 seconds
-            Handler().postDelayed(Runnable { // Stop animation (This will be after 3 seconds)
-                swipeLayout.setRefreshing(true)
-            }, 4000) // Delay in millis*/
         }
+
         Log.d(TAG, "onCreate finished")
     }
+
 
     private fun getLocation() {
         // check location permission
@@ -112,12 +104,21 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                         requestAPI()
                     } else {
                         // set latitude and longitude
-                        Log.d(TAG, "getLastLocation: before setting data latitude = $latitude, longitude = $longitude")
+                        Log.d(
+                            TAG,
+                            "getLastLocation: before setting data latitude = $latitude, longitude = $longitude"
+                        )
                         latitude = location.latitude.toString()
                         longitude = location.longitude.toString()
-                        locationName = getLocationName( location.latitude, location.longitude)
-                        Log.d(TAG, "getLastLocation: after setting data latitude = $latitude, longitude = $longitude")
-                        Log.d(TAG, "getLastLocation: after setting data location name = $locationName")
+                        locationName = getLocationName(location.latitude, location.longitude)
+                        Log.d(
+                            TAG,
+                            "getLastLocation: after setting data latitude = $latitude, longitude = $longitude"
+                        )
+                        Log.d(
+                            TAG,
+                            "getLastLocation: after setting data location name = $locationName"
+                        )
                         requestAPI()
                     }
                 }
@@ -159,7 +160,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             latitude = lastLocation.latitude.toString()
             longitude = lastLocation.longitude.toString()
             locationName = getLocationName(lastLocation.latitude, lastLocation.longitude)
-            Log.d(TAG, "getLastLocation: new location were set \nlatitude = $latitude, longitude = $longitude")
+            Log.d(
+                TAG,
+                "getLastLocation: new location were set \nlatitude = $latitude, longitude = $longitude"
+            )
             requestAPI()
         }
     }
