@@ -3,9 +3,7 @@ package com.ivk.weatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
@@ -15,7 +13,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,9 +24,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 //TODO: clean up
-//TODO: show city in toolbar
-//TODO: add option to select city and units
 //TODO: add settings
+//TODO: add option to select city and units
+//TODO: make detailed view opens when user click once
 
 private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
@@ -39,23 +36,18 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     RecyclerItemClickListener.OnRecyclerClickListener {
 
     private val OPEN_WEATHER_MAP_KEY: String = "b9331c3f8b9f662176fbd39baabf3f9a"
-    private val OPEN_WEATHER_MAP_BASE_URL: String = "https://api.openweathermap.org/data/2.5/onecall"
+    private val OPEN_WEATHER_MAP_BASE_URL: String =
+        "https://api.openweathermap.org/data/2.5/onecall"
+    private val PERMISSION_ID = 1010
+
     private val units: String = "imperial"
     private var latitude: String = "0.0"
     private var longitude: String = "0.0"
-    private val requestPermissionCode = 1
-    private var mLocation: Location? = null
-    //private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var cityName: String = " "
-    private var stateName: String = " "
-    private var countryName: String = " "
-    private lateinit var swipeLayout: SwipeRefreshLayout //by Delegates.lazy { findViewById(R.id.swipeContainer) as SwipeRefreshLayout }
-    //lateinit var locationRequest: LocationRequest
-
-    // 4.0 version of location
+    private var locationName: String = " "
+    private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    val PERMISSION_ID = 1010
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate starts")
@@ -70,27 +62,24 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         getLocation()
 
         Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
-        Log.d(TAG, "onCreate: cityName = $cityName, stateName = $stateName, countryName = $countryName")
-
-        requestAPI()
-
-        //set city name in toolbar
-        toolbar.title = cityName
+        Log.d(TAG, "onCreate: location name = $locationName")
 
         swipeLayout = findViewById(R.id.swipeContainer)
-        swipeLayout.setOnRefreshListener({
+        swipeLayout.setOnRefreshListener {
+            //TODO: make refresh prettier
+            //TODO: request new log&lat during refresh
             val intent = intent
             finish()
             startActivity(intent)
             //swipeLayout.isRefreshing = false
 
-            //this.recreate()                 // refresh your list contents somehow
+            //this.recreate()                 // refresh list contents somehow
             swipeLayout.isRefreshing = false
             /*// To keep animation for 4 seconds
             Handler().postDelayed(Runnable { // Stop animation (This will be after 3 seconds)
                 swipeLayout.setRefreshing(true)
             }, 4000) // Delay in millis*/
-        })
+        }
         Log.d(TAG, "onCreate finished")
     }
 
@@ -110,17 +99,25 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                         // if location is null get the new user's location
                         Log.d(TAG, "getLastLocation: location is null, getting new user's location")
                         getNewLocation()
-                        Log.d(TAG, "getLastLocation: before getNewLocation() latitude = $latitude, longitude = $longitude")
+                        Log.d(
+                            TAG,
+                            "getLastLocation: before getNewLocation() latitude = $latitude, longitude = $longitude"
+                        )
                         latitude = location?.latitude.toString()
                         longitude = location?.longitude.toString()
-                        Log.d(TAG, "getLastLocation: after getNewLocation() latitude = $latitude, longitude = $longitude")
+                        Log.d(
+                            TAG,
+                            "getLastLocation: after getNewLocation() latitude = $latitude, longitude = $longitude"
+                        )
                         requestAPI()
                     } else {
                         // set latitude and longitude
-                        Log.d(TAG, "getLastLocation: latitude = $latitude, longitude = $longitude")
+                        Log.d(TAG, "getLastLocation: before setting data latitude = $latitude, longitude = $longitude")
                         latitude = location.latitude.toString()
                         longitude = location.longitude.toString()
-                        Log.d(TAG, "getLastLocation: latitude = $latitude, longitude = $longitude")
+                        locationName = getLocationName( location.latitude, location.longitude)
+                        Log.d(TAG, "getLastLocation: after setting data latitude = $latitude, longitude = $longitude")
+                        Log.d(TAG, "getLastLocation: after setting data location name = $locationName")
                         requestAPI()
                     }
                 }
@@ -144,13 +141,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
         locationRequest.fastestInterval = 0
-        locationRequest.numUpdates = 2 // (?) 1
+        locationRequest.numUpdates = 1
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.myLooper()
         )
-        // TODO: find the way to update location here
         Log.d(TAG, "getNewLocation: finished")
     }
 
@@ -162,6 +158,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             // set new location
             latitude = lastLocation.latitude.toString()
             longitude = lastLocation.longitude.toString()
+            locationName = getLocationName(lastLocation.latitude, lastLocation.longitude)
             Log.d(TAG, "getLastLocation: new location were set \nlatitude = $latitude, longitude = $longitude")
             requestAPI()
         }
@@ -192,7 +189,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
@@ -269,16 +267,18 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
 
-    private fun getCityName(lat: Double, long: Double): String {
+    private fun getLocationName(lat: Double, long: Double): String {
         //var cityName:String = ""
         //var countryName = ""
         val geoCoder = Geocoder(this, Locale.getDefault())
         val address = geoCoder.getFromLocation(lat, long, 3)
+        val cityName = address.get(0).locality
+        val stateName = address.get(0).adminArea
+        val countryName = address.get(0).countryName
 
-        cityName = address.get(0).locality
-        countryName = address.get(0).countryName
-        Log.d("Debug:", "Your City: " + cityName + " ; your Country " + countryName)
-        return cityName
+        Log.d(TAG, "getCityName: cityName = $cityName,countryName = $countryName")
+        toolbar.title = "$cityName, $stateName"
+        return "$cityName, $stateName"
     }
 
 }

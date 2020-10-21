@@ -16,12 +16,14 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:layout_gravity="start"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 app:srcCompat="@android:drawable/ic_menu_mylocation"
                 android:contentDescription="@string/location_icon" />
 
