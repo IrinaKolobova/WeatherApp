@@ -13,7 +13,7 @@ class GetOpenWeatherJsonData(private val listener: OnDataAvailable) : AsyncTask<
         fun onError(exception: Exception)
     }
 
-    override fun doInBackground(vararg params: String?): ArrayList<WeatherData> {
+    override fun doInBackground(vararg params: String): ArrayList<WeatherData> {
         val dailyWeatherList = ArrayList<WeatherData>()
 
         try {

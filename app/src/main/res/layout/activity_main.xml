@@ -24,6 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
+                android:layout_margin="8dp"
                 app:srcCompat="@android:drawable/ic_menu_mylocation"
                 android:contentDescription="@string/location_icon" />
 
@@ -31,6 +32,8 @@
                 android:id="@+id/locationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 tools:text="City" />
 
         </androidx.appcompat.widget.Toolbar>

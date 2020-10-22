@@ -19,11 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-//TODO: put all location related code on separate class
+//TODO: put all location related code in separate class
 //TODO: add settings
 //TODO: add option to select city and units
 //TODO: open detailed view when user click once
@@ -272,8 +273,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
 
     private fun getLocationName(lat: Double, long: Double): String {
-        //var cityName:String = ""
-        //var countryName = ""
         val geoCoder = Geocoder(this, Locale.getDefault())
         val address = geoCoder.getFromLocation(lat, long, 3)
         val cityName = address.get(0).locality
@@ -281,7 +280,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         val countryName = address.get(0).countryName
 
         Log.d(TAG, "getCityName: cityName = $cityName,countryName = $countryName")
-        toolbar.title = "$cityName, $stateName"
+        toolbar.locationName.text = getString(R.string.location_name, cityName, stateName)
         return "$cityName, $stateName"
     }
 

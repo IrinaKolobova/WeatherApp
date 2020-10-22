@@ -48,7 +48,7 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
 
         holder.temperature.text = dayWeatherItem.dayTemp
         holder.date.text = SimpleDateFormat("EEE, MMM d", Locale.ENGLISH).format(Date(dayWeatherItem.date.toLong() * 1000))
-        holder.description.text = dayWeatherItem.description
+        holder.description.text = dayWeatherItem.description.capitalize(Locale.getDefault())
         holder.wind.text = dayWeatherItem.windSpeed
         holder.sunrise.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunrise.toLong()*1000))
         holder.sunset.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunset.toLong()*1000))
@@ -62,16 +62,16 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
             notifyItemChanged(position)
         }
 
-        var iconFromAPI = when(dayWeatherItem.icon) {
-            "01d" -> R.drawable.ic_01d
-            "02d" -> R.drawable.ic_02d
-            "03d" -> R.drawable.ic_03d
-            "04d" -> R.drawable.ic_04d
-            "09d" -> R.drawable.ic_09d
-            "10d" -> R.drawable.ic_10d
-            "11d" -> R.drawable.ic_11d
-            "13d" -> R.drawable.ic_13d
-            "50d" -> R.drawable.ic_50d
+        val iconFromAPI = when(dayWeatherItem.icon) {
+            "01d" -> R.drawable.ic_01d_64px
+            "02d" -> R.drawable.ic_02d_64px
+            "03d" -> R.drawable.ic_03_64px
+            "04d" -> R.drawable.ic_04d_64px
+            "09d" -> R.drawable.ic_09_64px
+            "10d" -> R.drawable.ic_10d_64px
+            "11d" -> R.drawable.ic_11_64px
+            "13d" -> R.drawable.ic_13d_64px
+            "50d" -> R.drawable.ic_50d_64px
             else -> R.drawable.placeholder
         }
         holder.thumbnail.setImageResource(iconFromAPI)
