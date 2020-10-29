@@ -10,7 +10,7 @@ import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import kotlinx.android.synthetic.main.settings_dialog.*
 
 private const val TAG = "SettingsDialog"
-// TODO: add dialog to MainActivity
+
 const val SETTINGS_UNITS_IMPERIAL = "fahrenheit"
 const val SETTINGS_UNITS_METRIC = "celsius"
 

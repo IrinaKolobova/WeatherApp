@@ -20,7 +20,7 @@
     <string name="cancel">Cancel</string>
     <string name="settingsSelectUnitsTitle">Select units:</string>
     <string name="ok">OK</string>
-    <string name="location_unavailable">Please refresh the app</string>
+    <string name="location_unavailable">Please, refresh the app</string>
     <string name="enterLocation">Enter city and state or zip code:</string>
     <string name="enterLocationHint"><![CDATA[city&state or zip]]></string>
 

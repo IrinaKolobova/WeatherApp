@@ -62,6 +62,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+//        // making toolbar navigation button
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        // replace arrow icon with custom icon
+//        toolbar.setNavigationIcon(R.drawable.outline_more_horiz_white_24)
+
         units = getString(R.string.imperial)
         locationName = getString(R.string.location_unavailable)
 
@@ -293,14 +298,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action bar if it is present
         menuInflater.inflate(R.menu.menu_main, menu)
-//
-//        if (BuildConfig.DEBUG) {
-//            val generate = menu.findItem(R.id.menumain_generate)
-//            generate.isVisible = true
-//        }
-
         return true
     }
 
@@ -308,15 +307,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.menumain_changeLocation -> {
-                val dialog = LocationChangeDialog()
-                //dialog.show(supportFragmentManager, null)
-            }
+        return when (item.itemId) {
             R.id.menumain_settings -> {
                 val dialog = SettingsDialog()
                 dialog.show(supportFragmentManager, null)
+                return true
             }
+            else -> super.onOptionsItemSelected(item)
+            // TODO: create about dialog
             //R.id.menumain_about -> showAboutDialog()
 //            android.R.id.home -> {
 //                Log.d(TAG, "onOptionsItemSelected: home button pressed")
@@ -332,7 +330,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 //                }
 //            }
         }
-        return super.onOptionsItemSelected(item)
+    }
+
+    fun changeLocation(view: View) {
+        // TODO: fill LocationChangeDialog class
+        val dialog = LocationChangeDialog()
+        //dialog.show(supportFragmentManager, null)
     }
 
 
