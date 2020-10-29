@@ -3,6 +3,7 @@ package com.ivk.weatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -11,6 +12,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +31,9 @@ import kotlin.collections.ArrayList
 //TODO: add settings
 //TODO: add option to select city and units
 //TODO: open detailed view when user click once
+//TODO: check if location is enabled on the phone
+//TODO: make animated icons
+//TODO: make location title run through toolbar like message in the bus
 
 private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
@@ -41,10 +47,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         "https://api.openweathermap.org/data/2.5/onecall"
     private val PERMISSION_ID = 1010
 
-    private val units: String = "imperial"
     private var latitude: String = "0.0"
     private var longitude: String = "0.0"
-    private var locationName: String = " "
+    private lateinit var units: String
+    private lateinit var locationName: String
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -56,6 +62,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        units = getString(R.string.imperial)
+        locationName = getString(R.string.location_unavailable)
 
         setRecyclerView()
 
@@ -153,17 +161,17 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(p0: LocationResult) {
+        override fun onLocationResult(locationResult: LocationResult) {
             Log.d(TAG, "locationCallback: onLocationResult started")
-            val lastLocation = p0.lastLocation
-            Log.d(TAG, "locationCallback: latitude = $latitude, longitude = $longitude")
+            val newLocation = locationResult.locations[0]
+            Log.d(TAG, "locationCallback: before setting new data latitude = $latitude, longitude = $longitude")
             // set new location
-            latitude = lastLocation.latitude.toString()
-            longitude = lastLocation.longitude.toString()
-            locationName = getLocationName(lastLocation.latitude, lastLocation.longitude)
+            latitude = newLocation.latitude.toString()
+            longitude = newLocation.longitude.toString()
+            locationName = getLocationName(newLocation.latitude, newLocation.longitude)
             Log.d(
                 TAG,
-                "getLastLocation: new location were set \nlatitude = $latitude, longitude = $longitude"
+                "getLastLocation: new location were set latitude = $latitude, longitude = $longitude"
             )
             requestAPI()
         }
@@ -283,5 +291,49 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         toolbar.locationName.text = getString(R.string.location_name, cityName, stateName)
         return "$cityName, $stateName"
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+//
+//        if (BuildConfig.DEBUG) {
+//            val generate = menu.findItem(R.id.menumain_generate)
+//            generate.isVisible = true
+//        }
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        when (item.itemId) {
+            R.id.menumain_changeLocation -> {
+                val dialog = LocationChangeDialog()
+                //dialog.show(supportFragmentManager, null)
+            }
+            R.id.menumain_settings -> {
+                val dialog = SettingsDialog()
+                dialog.show(supportFragmentManager, null)
+            }
+            //R.id.menumain_about -> showAboutDialog()
+//            android.R.id.home -> {
+//                Log.d(TAG, "onOptionsItemSelected: home button pressed")
+//                val fragment = findFragmentById(R.id.task_details_container)
+////                removeEditPane(fragment)
+//                if ((fragment is AddEditFragment) && fragment.isDirty()) {
+//                    showConfirmationDialog(DIALOG_ID_CANCEL_EDIT,
+//                        getString(R.string.cancelEDitDiag_message),
+//                        R.string.cancelEditDiag_positive_caption,
+//                        R.string.cancelEditDiag_negative_caption)
+//                } else {
+//                    removeEditPane(fragment)
+//                }
+//            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 }

@@ -9,8 +9,19 @@
     <string name="wind">Wind:</string>
     <string name="celsius">°C</string>
     <string name="fahrenheit">°F</string>
+    <string name="imperial">imperial</string>
+    <string name="metric">metric</string>
     <string name="miles_per_hour">m/h</string>
     <string name="location_icon">location icon</string>
     <string name="location_name">%1$s, %2$s</string>
+    <string name="menumain_changeLocation">Change location</string>
+    <string name="menumain_settings">Settings</string>
+    <string name="menumain_about">About App</string>
+    <string name="cancel">Cancel</string>
+    <string name="settingsSelectUnitsTitle">Select units:</string>
+    <string name="ok">OK</string>
+    <string name="location_unavailable">Please refresh the app</string>
+    <string name="enterLocation">Enter city and state or zip code:</string>
+    <string name="enterLocationHint"><![CDATA[city&state or zip]]></string>
 
 </resources>
