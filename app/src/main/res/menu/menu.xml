@@ -1,29 +1,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.ivk.tasktimer.MainActivity">
-
+    tools:context="com.ivk.weatherapp.MainActivity">
 
     <item
-        android:id="@+id/menumain_settings"
+        android:id="@+id/menu_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/menumain_settings"
         android:orderInCategory="1"
-        app:showAsAction="never"/>
+        android:title="@string/menu_settings"
+        app:showAsAction="never" />
     <!-- android:icon="@drawable/ic_settings_white_24dp" -->
 
     <item
-        android:id="@+id/menumain_changeLocation"
+        android:id="@+id/menu_changeLocation"
         android:icon="@android:drawable/ic_menu_mylocation"
-        android:title="@string/menumain_changeLocation"
         android:orderInCategory="2"
-        app:showAsAction="never"/>
+        android:title="@string/menu_changeLocation"
+        app:showAsAction="never" />
 
     <item
-        android:id="@+id/menumain_about"
+        android:id="@+id/menu_about"
         android:icon="@android:drawable/ic_menu_info_details"
-        android:title="@string/menumain_about"
         android:orderInCategory="3"
+        android:title="@string/menu_about"
         app:showAsAction="never" />
 
 </menu>

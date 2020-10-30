@@ -3,7 +3,6 @@ package com.ivk.weatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -299,7 +298,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu, menu)
         return true
     }
 
@@ -308,14 +307,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.menumain_settings -> {
+            R.id.menu_settings -> {
                 val dialog = SettingsDialog()
                 dialog.show(supportFragmentManager, null)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
             // TODO: create about dialog
-            //R.id.menumain_about -> showAboutDialog()
+            //R.id.menu_about -> showAboutDialog()
 //            android.R.id.home -> {
 //                Log.d(TAG, "onOptionsItemSelected: home button pressed")
 //                val fragment = findFragmentById(R.id.task_details_container)
@@ -331,12 +330,4 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 //            }
         }
     }
-
-    fun changeLocation(view: View) {
-        // TODO: fill LocationChangeDialog class
-        val dialog = LocationChangeDialog()
-        //dialog.show(supportFragmentManager, null)
-    }
-
-
 }
