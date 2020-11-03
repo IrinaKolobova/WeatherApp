@@ -39,16 +39,19 @@ private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
 
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     GetOpenWeatherJsonData.OnDataAvailable,
-    RecyclerItemClickListener.OnRecyclerClickListener {
+    RecyclerItemClickListener.OnRecyclerClickListener,
+    SettingsDialog.SettingsDialogListener{
 
     private val OPEN_WEATHER_MAP_KEY: String = "b9331c3f8b9f662176fbd39baabf3f9a"
     private val OPEN_WEATHER_MAP_BASE_URL: String =
         "https://api.openweathermap.org/data/2.5/onecall"
     private val PERMISSION_ID = 1010
 
+    private val defaultUnits = "imperial"
+
     private var latitude: String = "0.0"
     private var longitude: String = "0.0"
-    private lateinit var units: String
+    private var units = SETTINGS_UNITS
     private lateinit var locationName: String
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -76,6 +79,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
         Log.d(TAG, "onCreate: location name = $locationName")
+        Log.d(TAG, "onCreate: units = $units")
 
         swipeLayout = findViewById(R.id.swipeContainer)
         swipeLayout.setOnRefreshListener {
@@ -234,12 +238,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private fun requestAPI() {
-        Log.d(TAG, "requestAPI: latitude = $latitude, longitude = $longitude")
+        Log.d(TAG, "requestAPI: latitude = $latitude, longitude = $longitude, units = $units")
         val openWeatherUrl = createOpenWeatherUri(
-            OPEN_WEATHER_MAP_BASE_URL,
-            latitude, longitude, units,
-            "hourly,minutely", OPEN_WEATHER_MAP_KEY
-        )
+                OPEN_WEATHER_MAP_BASE_URL,
+                latitude, longitude, units,
+                "hourly,minutely", OPEN_WEATHER_MAP_KEY
+            )
         val getRawData = GetRawData(this)
         getRawData.execute(openWeatherUrl)
     }
@@ -258,7 +262,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         longitude: String, units: String,
         exclude: String, key: String
     ): String {
-        Log.d(TAG, "createOpenWeatherUri: latitude = $latitude, longitude = $longitude")
+        Log.d(TAG, "createOpenWeatherUri: latitude = $latitude, longitude = $longitude, units = $units")
         return Uri.parse(baseURL).buildUpon().appendQueryParameter("lat", latitude)
             .appendQueryParameter("lon", longitude).appendQueryParameter("units", units)
             .appendQueryParameter("exclude", exclude).appendQueryParameter("appid", key).build()
@@ -308,7 +312,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.menu_settings -> {
-                val dialog = SettingsDialog()
+                val dialog = SettingsDialog(this)
                 dialog.show(supportFragmentManager, null)
                 return true
             }
@@ -330,4 +334,18 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 //            }
         }
     }
+
+    fun changeLocation(view: View) {
+        // TODO: fill LocationChangeDialog class
+        val dialog = LocationChangeDialog()
+        //dialog.show(supportFragmentManager, null)
+    }
+
+    override fun applySettings(unitsFromSettings: String) {
+        units = unitsFromSettings
+        Log.d(TAG, "applySettings: units = $units")
+        requestAPI()
+    }
+
+
 }

@@ -5,12 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import kotlinx.android.synthetic.main.settings_dialog.*
 import java.util.*
-
 
 private const val TAG = "SettingsDialog"
 
@@ -19,8 +17,11 @@ const val SETTINGS_UNITS_METRIC = "metric"
 const val SETTINGS_UNITS = "imperial" // set imperial as default
 const val SWITCH_STATUS = false
 
-@Suppress("DEPRECATION")
-class SettingsDialog : AppCompatDialogFragment() {
+class SettingsDialog(private val listener: SettingsDialogListener) : AppCompatDialogFragment() {
+
+    interface SettingsDialogListener {
+        fun applySettings(unitsFromSettings: String)
+    }
 
     // get the region to set default units
     private val defaultUnits =
@@ -57,6 +58,7 @@ class SettingsDialog : AppCompatDialogFragment() {
 
         settings_okButton.setOnClickListener {
             saveValues()
+            listener.applySettings(units)
             dismiss()
         }
 
@@ -98,6 +100,7 @@ class SettingsDialog : AppCompatDialogFragment() {
             units = getString(SETTINGS_UNITS, defaultUnits).toString()
         }
 
+        Log.d(TAG, "readValues: ended")
         Log.d(TAG, "readValues: new switchStatus = $switchStatus")
         Log.d(TAG, "readValues: new units = $units")
     }
