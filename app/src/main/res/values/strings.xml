@@ -12,6 +12,7 @@
     <string name="imperial">imperial</string>
     <string name="metric">metric</string>
     <string name="miles_per_hour">m/h</string>
+    <string name="km_per_hour">km/h</string>
     <string name="location_icon">location icon</string>
     <string name="location_name">%1$s, %2$s</string>
     <string name="menu_changeLocation">Change location</string>

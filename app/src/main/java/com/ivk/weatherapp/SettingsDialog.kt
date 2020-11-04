@@ -14,10 +14,10 @@ private const val TAG = "SettingsDialog"
 
 const val SETTINGS_UNITS_IMPERIAL = "imperial"
 const val SETTINGS_UNITS_METRIC = "metric"
-const val SETTINGS_UNITS = "imperial" // set imperial as default
-const val SWITCH_STATUS = false
+var SETTINGS_UNITS = "imperial" // set imperial as default
+var SWITCH_STATUS = false
 
-class SettingsDialog(private val listener: SettingsDialogListener) : AppCompatDialogFragment() {
+class SettingsDialog(var listener: SettingsDialogListener) : AppCompatDialogFragment() {
 
     interface SettingsDialogListener {
         fun applySettings(unitsFromSettings: String)
@@ -29,8 +29,8 @@ class SettingsDialog(private val listener: SettingsDialogListener) : AppCompatDi
             "US", "GB", "MM", "LR" -> SETTINGS_UNITS_IMPERIAL
             else -> SETTINGS_UNITS_METRIC
         }
-    private var units = defaultUnits
-    private var defaultSwitchStatus = units == defaultUnits
+    private var units = SETTINGS_UNITS
+    private var defaultSwitchStatus = units != defaultUnits
     private var switchStatus = defaultSwitchStatus
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,25 +56,37 @@ class SettingsDialog(private val listener: SettingsDialogListener) : AppCompatDi
 
         dialog?.setTitle(R.string.menu_settings)
 
+        switchListener()
+
+        Log.d(TAG, "onViewCreated: units = $units")
+
         settings_okButton.setOnClickListener {
             saveValues()
             listener.applySettings(units)
             dismiss()
         }
 
+        settings_cancelButton.setOnClickListener { dismiss() }
+    }
+
+
+    private fun switchListener(){
         switch_units.setOnCheckedChangeListener { _, isChecked ->
-            units = if (isChecked) {
+            if (isChecked) {
                 // the switch is enabled/checked: set imperial units
-                SETTINGS_UNITS_IMPERIAL
+                Log.d(TAG, "switchListener: switch isChecked (true) = $isChecked")
+                units = SETTINGS_UNITS_METRIC
+                switchStatus = true
+                Log.d(TAG, "switchListener: setting new units (metric) = $units")
             } else {
                 // the switch is disabled: set metric units
-                SETTINGS_UNITS_METRIC
+                Log.d(TAG, "switchListener: switch isChecked (false) = $isChecked")
+                units = SETTINGS_UNITS_IMPERIAL
+                switchStatus = false
+                Log.d(TAG, "switchListener: setting new units (imperial) = $units")
             }
+            Log.d(TAG, "switchListener: new units = $units")
         }
-
-        Log.d(TAG, "onViewCreated: units = $units")
-
-        settings_cancelButton.setOnClickListener { dismiss() }
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -95,10 +107,12 @@ class SettingsDialog(private val listener: SettingsDialogListener) : AppCompatDi
         Log.d(TAG, "readValues: switchStatus = $switchStatus")
         Log.d(TAG, "readValues: units = $units")
 
-        with(getDefaultSharedPreferences(context)) {
+        switchListener()
+
+        /*with(getDefaultSharedPreferences(context)) {
             switchStatus = getBoolean(SWITCH_STATUS.toString(), defaultSwitchStatus)
             units = getString(SETTINGS_UNITS, defaultUnits).toString()
-        }
+        }*/
 
         Log.d(TAG, "readValues: ended")
         Log.d(TAG, "readValues: new switchStatus = $switchStatus")
@@ -106,25 +120,34 @@ class SettingsDialog(private val listener: SettingsDialogListener) : AppCompatDi
     }
 
     private fun saveValues() {
+        Log.d(TAG, "saveValues: called")
         val newUnits = if (switch_units.isChecked) {
             switch_units.textOn.toString()
         } else {
             switch_units.textOff.toString()
         }
+
         val newSwitchStatus = switch_units.isChecked
         Log.d(
             TAG,
             "saveValues: newSwitchStatus = $newSwitchStatus, switchStatus = ${switch_units.isChecked}"
         )
         Log.d(TAG, "saveValues: switch_units = ${switch_units.isChecked}")
+        Log.d(TAG, "saveValues: newUnits = $newUnits")
+        Log.d(TAG, "saveValues: units = $units")
 
-        with(getDefaultSharedPreferences(context).edit()) {
+        //with(getDefaultSharedPreferences(context).edit()) {
             if (newUnits != units) {
-                putString(SETTINGS_UNITS, newUnits)
-                putBoolean(SWITCH_STATUS.toString(), newSwitchStatus)
+                units = newUnits
+                Log.d(TAG, "saveValues: units = $units")
+                Log.d(TAG, "saveValues: switch_units = $switch_units")
             }
-            apply()
-        }
+            //apply()
+       // }
+        SETTINGS_UNITS = units
+        Log.d(TAG, "saveValues: ended")
+        Log.d(TAG, "saveValues: new switchStatus = $switchStatus")
+        Log.d(TAG, "saveValues: new units = $units")
     }
 
     override fun onDestroy() {

@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,6 +24,7 @@ import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.weekday_list_items.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,8 +49,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         "https://api.openweathermap.org/data/2.5/onecall"
     private val PERMISSION_ID = 1010
 
-    private val defaultUnits = "imperial"
-
     private var latitude: String = "0.0"
     private var longitude: String = "0.0"
     private var units = SETTINGS_UNITS
@@ -64,12 +64,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-//        // making toolbar navigation button
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        // replace arrow icon with custom icon
-//        toolbar.setNavigationIcon(R.drawable.outline_more_horiz_white_24)
 
-        units = getString(R.string.imperial)
+        //units = //getString(R.string.imperial)
         locationName = getString(R.string.location_unavailable)
 
         setRecyclerView()
@@ -85,9 +81,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         swipeLayout.setOnRefreshListener {
             Log.d(TAG, "onCreate: refreshing layout")
             getNewLocation()
+            applySettings(units)
             swipeLayout.isRefreshing = false
         }
-
         Log.d(TAG, "onCreate finished")
     }
 
@@ -253,6 +249,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         //val weatherData = weatherRVAdapter.getWeatherData(position)
     }
 
+
     override fun onItemLongClick(view: View, position: Int) {
         Log.d(TAG, "onItemLongClick: long tap at position $position")
     }
@@ -342,10 +339,22 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun applySettings(unitsFromSettings: String) {
+        Log.d(TAG, "applySettings: starts")
         units = unitsFromSettings
         Log.d(TAG, "applySettings: units = $units")
+        // TODO: Convert units without using API
+        // TODO: convert time
+        if(units == "imperial") {
+            temp_unit.text = getString(R.string.fahrenheit)
+            speed_units.text = getString(R.string.miles_per_hour)
+            Log.d(TAG, "applySettings: changing text data temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
+        } else {
+            temp_unit.text = getString(R.string.celsius)
+            speed_units.text = getString(R.string.km_per_hour)
+            Log.d(TAG, "applySettings: changing text data temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
+        }
+        Log.d(TAG, "applySettings: requesting api")
         requestAPI()
+        Log.d(TAG, "applySettings: exiting temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
     }
-
-
 }
