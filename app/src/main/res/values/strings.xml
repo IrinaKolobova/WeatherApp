@@ -18,11 +18,16 @@
     <string name="menu_changeLocation">Change location</string>
     <string name="menu_settings">Change units</string>
     <string name="menu_about">About this App</string>
+    <string name="location_change">Select new location</string>
     <string name="cancel">Cancel</string>
     <string name="settingsSelectUnitsTitle">Select units:</string>
     <string name="ok">OK</string>
     <string name="location_unavailable">Please, refresh the app</string>
     <string name="enterLocation">Enter city and state or zip code:</string>
     <string name="enterLocationHint"><![CDATA[city&state or zip]]></string>
+    <string name="about_email">Email: kolobovairinav@gmail.com</string>
+    <string name="developer">Developer: Irina Kolobova</string>
+    <string name="linkedin_web_url">LinkedIn: <u>www.linkedin.com/in/irina-kolobova</u></string>
+    <string name="icons_credits">Icons delivered from <b>CHANGE DATA</b> at CHANGEDATA.org by <b>CHANGE DATA</b></string>
 
 </resources>

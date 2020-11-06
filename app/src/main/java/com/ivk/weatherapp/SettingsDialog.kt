@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import kotlinx.android.synthetic.main.settings_dialog.*
 import java.util.*
 
@@ -14,8 +13,7 @@ private const val TAG = "SettingsDialog"
 
 const val SETTINGS_UNITS_IMPERIAL = "imperial"
 const val SETTINGS_UNITS_METRIC = "metric"
-var SETTINGS_UNITS = "imperial" // set imperial as default
-var SWITCH_STATUS = false
+var SETTINGS_UNITS = "imperial"
 
 class SettingsDialog(var listener: SettingsDialogListener) : AppCompatDialogFragment() {
 
@@ -69,8 +67,7 @@ class SettingsDialog(var listener: SettingsDialogListener) : AppCompatDialogFrag
         settings_cancelButton.setOnClickListener { dismiss() }
     }
 
-
-    private fun switchListener(){
+    private fun switchListener() {
         switch_units.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // the switch is enabled/checked: set imperial units
@@ -109,11 +106,6 @@ class SettingsDialog(var listener: SettingsDialogListener) : AppCompatDialogFrag
 
         switchListener()
 
-        /*with(getDefaultSharedPreferences(context)) {
-            switchStatus = getBoolean(SWITCH_STATUS.toString(), defaultSwitchStatus)
-            units = getString(SETTINGS_UNITS, defaultUnits).toString()
-        }*/
-
         Log.d(TAG, "readValues: ended")
         Log.d(TAG, "readValues: new switchStatus = $switchStatus")
         Log.d(TAG, "readValues: new units = $units")
@@ -136,14 +128,12 @@ class SettingsDialog(var listener: SettingsDialogListener) : AppCompatDialogFrag
         Log.d(TAG, "saveValues: newUnits = $newUnits")
         Log.d(TAG, "saveValues: units = $units")
 
-        //with(getDefaultSharedPreferences(context).edit()) {
-            if (newUnits != units) {
-                units = newUnits
-                Log.d(TAG, "saveValues: units = $units")
-                Log.d(TAG, "saveValues: switch_units = $switch_units")
-            }
-            //apply()
-       // }
+        if (newUnits != units) {
+            units = newUnits
+            Log.d(TAG, "saveValues: units = $units")
+            Log.d(TAG, "saveValues: switch_units = $switch_units")
+        }
+
         SETTINGS_UNITS = units
         Log.d(TAG, "saveValues: ended")
         Log.d(TAG, "saveValues: new switchStatus = $switchStatus")

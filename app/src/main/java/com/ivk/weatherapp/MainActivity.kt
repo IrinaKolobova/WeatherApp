@@ -11,11 +11,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,7 +43,8 @@ private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     GetOpenWeatherJsonData.OnDataAvailable,
     RecyclerItemClickListener.OnRecyclerClickListener,
-    SettingsDialog.SettingsDialogListener{
+    SettingsDialog.SettingsDialogListener,
+    LocationChangeDialog.LocationChangeDialogListener{
 
     private val OPEN_WEATHER_MAP_KEY: String = "b9331c3f8b9f662176fbd39baabf3f9a"
     private val OPEN_WEATHER_MAP_BASE_URL: String =
@@ -51,12 +53,13 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     private var latitude: String = "0.0"
     private var longitude: String = "0.0"
-    private var units = SETTINGS_UNITS
+    private var units = "imperial"
     private lateinit var locationName: String
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
 
+    private var aboutDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate starts")
@@ -307,35 +310,44 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
+        when (item.itemId) {
             R.id.menu_settings -> {
+                Log.d(TAG, "onOptionsItemSelected: menu_settings")
                 val dialog = SettingsDialog(this)
                 dialog.show(supportFragmentManager, null)
                 return true
             }
+            R.id.menu_changeLocation -> {
+                Log.d(TAG, "onOptionsItemSelected: menu_changeLocation")
+                val dialog = LocationChangeDialog(this)
+                dialog.show(supportFragmentManager, null)
+                return true
+            }
+            R.id.menu_about -> showAboutDialog()
             else -> super.onOptionsItemSelected(item)
-            // TODO: create about dialog
-            //R.id.menu_about -> showAboutDialog()
-//            android.R.id.home -> {
-//                Log.d(TAG, "onOptionsItemSelected: home button pressed")
-//                val fragment = findFragmentById(R.id.task_details_container)
-////                removeEditPane(fragment)
-//                if ((fragment is AddEditFragment) && fragment.isDirty()) {
-//                    showConfirmationDialog(DIALOG_ID_CANCEL_EDIT,
-//                        getString(R.string.cancelEDitDiag_message),
-//                        R.string.cancelEditDiag_positive_caption,
-//                        R.string.cancelEditDiag_negative_caption)
-//                } else {
-//                    removeEditPane(fragment)
-//                }
-//            }
         }
+
+        return super.onOptionsItemSelected(item)
     }
 
-    fun changeLocation(view: View) {
-        // TODO: fill LocationChangeDialog class
-        val dialog = LocationChangeDialog()
-        //dialog.show(supportFragmentManager, null)
+    private fun showAboutDialog() : Boolean {
+        Log.d(TAG, "onOptionsItemSelected: menu_about")
+        val messageView = LayoutInflater.from(this).inflate(R.layout.about_dialog, null)
+        val builder = AlertDialog.Builder(this).setView(messageView)
+
+        builder.setTitle(R.string.app_name)
+        //builder.setIcon(R.mipmap.ic_launcher)
+
+        builder.setPositiveButton(R.string.ok) { _, _ ->
+            Log.d(TAG, "onClick: Entering messageView.onClick")
+            if (aboutDialog != null && aboutDialog?.isShowing == true) {
+                aboutDialog?.dismiss()
+            }
+        }
+        aboutDialog = builder.setView(messageView).create()
+        builder.show()
+
+        return true
     }
 
     override fun applySettings(unitsFromSettings: String) {
@@ -356,5 +368,15 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         Log.d(TAG, "applySettings: requesting api")
         requestAPI()
         Log.d(TAG, "applySettings: exiting temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
+    }
+
+    fun changeLocation(view: View) {
+        // TODO: fill LocationChangeDialog class
+        val dialog = LocationChangeDialog(this)
+        dialog.show(supportFragmentManager, null)
+    }
+
+    override fun applyLocationChange(newLocation: String) {
+        TODO("Not yet implemented")
     }
 }
