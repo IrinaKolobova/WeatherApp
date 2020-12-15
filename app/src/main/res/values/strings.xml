@@ -12,7 +12,7 @@
     <string name="imperial">imperial</string>
     <string name="metric">metric</string>
     <string name="miles_per_hour">m/h</string>
-    <string name="km_per_hour">km/h</string>
+    <string name="meters_per_second">m/s</string>
     <string name="location_icon">location icon</string>
     <string name="location_name">%1$s, %2$s</string>
     <string name="menu_changeLocation">Change location</string>
@@ -23,11 +23,12 @@
     <string name="settingsSelectUnitsTitle">Select units:</string>
     <string name="ok">OK</string>
     <string name="location_unavailable">Please, refresh the app</string>
-    <string name="enterLocation">Enter city and state or zip code:</string>
-    <string name="enterLocationHint"><![CDATA[city&state or zip]]></string>
+    <string name="enterLocation">Enter city or zip code:</string>
+    <string name="enterLocationHint"><![CDATA[city or zip]]></string>
     <string name="about_email">Email: kolobovairinav@gmail.com</string>
-    <string name="developer">Developer: Irina Kolobova</string>
-    <string name="linkedin_web_url">LinkedIn: <u>www.linkedin.com/in/irina-kolobova</u></string>
-    <string name="icons_credits">Icons delivered from <b>CHANGE DATA</b> at CHANGEDATA.org by <b>CHANGE DATA</b></string>
+    <string name="developer">Developer: <a href="http://www.linkedin.com/in/irina-kolobova">Irina Kolobova</a></string>
+    <string name="linkedin_web_url">LinkedIn: </string>
+    <string name="icons_credits">Icons designed by <a href="http://www.freepik.com">Freepik</a></string>
+    <string name="temp_unit">temperature unit</string>
 
 </resources>

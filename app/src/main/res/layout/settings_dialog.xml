@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="?attr/dialogPreferredPadding">
+    android:padding="?attr/dialogPreferredPadding"
+    android:background="@drawable/list_item_selected">
 
     <TextView
         android:id="@+id/selectUnitsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:ems="35"
         android:text="@string/settingsSelectUnitsTitle"
         android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,12 +28,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:showText="true"
-        android:textOff="@string/imperial"
-        android:textOn="@string/metric"
+        android:switchMinWidth="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectUnitsTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/selectUnitsTitle"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Button
         android:id="@+id/settings_cancelButton"
@@ -50,6 +53,24 @@
         android:text="@string/ok"
         app:layout_constraintBaseline_toBaselineOf="@+id/settings_cancelButton"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/settings_imageFahrenheit"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toStartOf="@+id/switch_units"
+        app:layout_constraintTop_toBottomOf="@+id/selectUnitsTitle"
+        app:srcCompat="@drawable/ic_fahrenheit"
+        android:contentDescription="@string/fahrenheit" />
+
+    <ImageView
+        android:id="@+id/settings_imageCelsius"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toEndOf="@+id/switch_units"
+        app:layout_constraintTop_toBottomOf="@+id/selectUnitsTitle"
+        app:srcCompat="@drawable/ic_celsius"
+        android:contentDescription="@string/celsius" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
