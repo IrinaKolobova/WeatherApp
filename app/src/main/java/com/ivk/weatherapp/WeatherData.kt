@@ -1,6 +1,5 @@
 package com.ivk.weatherapp
 
-import android.util.Log
 import java.io.IOException
 import java.io.ObjectStreamException
 import java.io.Serializable
@@ -17,7 +16,7 @@ class WeatherData(
     }
 
     override fun toString(): String {
-        return "WeatherData(latitude='$latitude', longitude='$longitude', date='$date', day=$day, "+
+        return "WeatherData(latitude='$latitude', longitude='$longitude', date='$date', day=$day, " +
                 "currentTemp='$currentTemp', dayTemp='$dayTemp', nightTemp='$nightTemp', " +
                 "description='$description', windSpeed='$windSpeed', sunrise='$sunrise', " +
                 "sunset='$sunset', icon='$icon')"

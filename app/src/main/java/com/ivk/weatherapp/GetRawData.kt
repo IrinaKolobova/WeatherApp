@@ -1,7 +1,6 @@
 package com.ivk.weatherapp
 
 import android.os.AsyncTask
-import android.util.Log
 import java.io.IOException
 import java.lang.Exception
 import java.net.MalformedURLException
@@ -11,9 +10,7 @@ enum class DownloadStatus {
     OK, IDLE, NOT_INITIALIZED, FAILED_OR_EMPTY, PERMISSIONS_ERROR, ERROR
 }
 
-private const val TAG = "GetRawData"
-
-class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, Void, String>(){
+class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, Void, String>() {
     private var downloadStatus = DownloadStatus.IDLE
 
     interface OnDownloadComplete {
@@ -29,7 +26,7 @@ class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, V
         try {
             downloadStatus = DownloadStatus.OK
             return URL(params[0]).readText()
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             val errorMessage = when (e) {
                 is MalformedURLException -> {
                     downloadStatus = DownloadStatus.NOT_INITIALIZED
@@ -42,12 +39,12 @@ class GetRawData(private val listener: OnDownloadComplete) : AsyncTask<String, V
                 is SecurityException -> {
                     downloadStatus = DownloadStatus.PERMISSIONS_ERROR
                     "doInBackGround: Security exception: Needs permission? ${e.message}"
-                } else -> {
+                }
+                else -> {
                     downloadStatus = DownloadStatus.ERROR
                     "Unknown error: ${e.message}"
                 }
             }
-            Log.d(TAG, errorMessage)
 
             return errorMessage
         }

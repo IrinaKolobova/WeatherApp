@@ -1,7 +1,6 @@
 package com.ivk.weatherapp
 
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,26 +13,25 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-private const val TAG = "WeatherRVAdapter"
-
 class WeatherDataViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    var date : TextView = view.findViewById(R.id.date)
-    var temperature : TextView = view.findViewById(R.id.temperature)
+    var date: TextView = view.findViewById(R.id.date)
+    var temperature: TextView = view.findViewById(R.id.temperature)
     var temperatureIcon: ImageView = view.findViewById(R.id.temp_unit)
-    var thumbnail : ImageView = view.findViewById(R.id.thumbnail)
-    var description : TextView = view.findViewById(R.id.description)
-    var wind : TextView = view.findViewById(R.id.wind_data)
+    var thumbnail: ImageView = view.findViewById(R.id.thumbnail)
+    var description: TextView = view.findViewById(R.id.description)
+    var wind: TextView = view.findViewById(R.id.wind_data)
     var windUnits: TextView = view.findViewById(R.id.speed_units)
-    var sunrise : TextView = view.findViewById(R.id.sunrise_data)
-    var sunset : TextView = view.findViewById(R.id.sunset_data)
-    var weatherLayout : ConstraintLayout = view.findViewById(R.id.weather_item_layout)
-    var expandableLayout : ConstraintLayout = view.findViewById(R.id.expandableView)
+    var sunrise: TextView = view.findViewById(R.id.sunrise_data)
+    var sunset: TextView = view.findViewById(R.id.sunset_data)
+    var weatherLayout: ConstraintLayout = view.findViewById(R.id.weather_item_layout)
+    var expandableLayout: ConstraintLayout = view.findViewById(R.id.expandableView)
 
 }
-class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : RecyclerView.Adapter<WeatherDataViewHolder>() {
+
+class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) :
+    RecyclerView.Adapter<WeatherDataViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherDataViewHolder {
-        Log.d(TAG, "onCreateViewHolder: new view requested")
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.weekday_list_items,
             parent,
@@ -45,16 +43,18 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: WeatherDataViewHolder, position: Int) {
         val dayWeatherItem = dailyWeatherDataList[position]
-        Log.d(TAG, "onBindViewHolder ${dayWeatherItem.day} -> $position")
 
         holder.temperature.text = dayWeatherItem.dayTemp
-        holder.date.text = SimpleDateFormat("EEE, MMM d", Locale.ENGLISH).format(Date(dayWeatherItem.date.toLong() * 1000))
+        holder.date.text = SimpleDateFormat(
+            "EEE, MMM d",
+            Locale.ENGLISH
+        ).format(Date(dayWeatherItem.date.toLong() * 1000))
         holder.description.text = dayWeatherItem.description.capitalize(Locale.getDefault())
         holder.wind.text = dayWeatherItem.windSpeed
 
 
-        val isExtendable : Boolean = dailyWeatherDataList[position].expandable
-        holder.expandableLayout.visibility = if(isExtendable) View.VISIBLE else View.GONE
+        val isExtendable: Boolean = dailyWeatherDataList[position].expandable
+        holder.expandableLayout.visibility = if (isExtendable) View.VISIBLE else View.GONE
 
         holder.weatherLayout.setOnClickListener {
             val weatherData = dailyWeatherDataList[position]
@@ -64,19 +64,27 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
 
         val units = SETTINGS_UNITS
 
-        if(units == "metric"){
+        if (units == "metric") {
             holder.windUnits.setText(R.string.meters_per_second)
             holder.temperatureIcon.setImageResource(R.drawable.ic_celsius)
-            holder.sunrise.text = SimpleDateFormat("HH:mm").format(Date(dayWeatherItem.sunrise.toLong()*1000))
-            holder.sunset.text = SimpleDateFormat("HH:mm").format(Date(dayWeatherItem.sunset.toLong()*1000))
+            holder.sunrise.text =
+                SimpleDateFormat("HH:mm").format(Date(dayWeatherItem.sunrise.toLong() * 1000))
+            holder.sunset.text =
+                SimpleDateFormat("HH:mm").format(Date(dayWeatherItem.sunset.toLong() * 1000))
         } else {
             holder.windUnits.setText(R.string.miles_per_hour)
             holder.temperatureIcon.setImageResource(R.drawable.ic_fahrenheit)
-            holder.sunrise.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunrise.toLong()*1000))
-            holder.sunset.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunset.toLong()*1000))
+            holder.sunrise.text = SimpleDateFormat(
+                "hh:mm a",
+                Locale.ENGLISH
+            ).format(Date(dayWeatherItem.sunrise.toLong() * 1000))
+            holder.sunset.text = SimpleDateFormat(
+                "hh:mm a",
+                Locale.ENGLISH
+            ).format(Date(dayWeatherItem.sunset.toLong() * 1000))
         }
 
-        val iconFromAPI = when(dayWeatherItem.icon) {
+        val iconFromAPI = when (dayWeatherItem.icon) {
             "01d" -> R.drawable.ic_01d
             "02d" -> R.drawable.ic_02d
             "03d" -> R.drawable.ic_03
@@ -89,28 +97,7 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
             else -> R.drawable.ic_na
         }
 
-       /*val background = when(dayWeatherItem.icon) {
-            "01d" -> R.drawable.list_item_01d
-            "02d" -> R.drawable.list_item_02d
-            "03d" -> R.drawable.list_item_03
-            "04d" -> R.drawable.list_item_04
-            "09d" -> R.drawable.list_item_09
-            "10d" -> R.drawable.list_item_10
-            "11d" -> R.drawable.list_item_11
-            "13d" -> R.drawable.list_item_13
-            "50d" -> R.drawable.list_item_50
-            else -> R.color.transparent
-        }*/
         holder.thumbnail.setImageResource(iconFromAPI)
-        //holder.weatherLayout.setBackgroundResource(background)
-
-        //Picasso.with(holder.thumbnail.context).load(dayWeatherItem.icon)
-        /*Picasso.get().load(dayWeatherItem.icon)
-            .error(R.drawable.placeholder)
-            .placeholder(R.drawable.placeholder)
-            .into(holder.thumbnail)*/
-
-        //holder.bind(dayWeatherItem)
     }
 
     override fun getItemCount(): Int {

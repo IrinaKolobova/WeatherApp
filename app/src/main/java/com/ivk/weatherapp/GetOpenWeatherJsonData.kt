@@ -1,13 +1,11 @@
 package com.ivk.weatherapp
 
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 
-private const val TAG = "GetOpenWeatherJsonData"
-
-class GetOpenWeatherJsonData(private val listener: OnDataAvailable) : AsyncTask<String, Void, ArrayList<WeatherData>>() {
+class GetOpenWeatherJsonData(private val listener: OnDataAvailable) :
+    AsyncTask<String, Void, ArrayList<WeatherData>>() {
     interface OnDataAvailable {
         fun onDataAvailable(data: List<WeatherData>)
         fun onError(exception: Exception)
@@ -23,7 +21,7 @@ class GetOpenWeatherJsonData(private val listener: OnDataAvailable) : AsyncTask<
             val currentTemp = jsonData.getJSONObject("current").getString("temp")
 
             val dailyArray = jsonData.getJSONArray("daily")
-            for (i in 0 until 7){ // until dailyArray.length()-1
+            for (i in 0 until 7) {
                 val jsonWeatherData = dailyArray.getJSONObject(i)
                 val date = jsonWeatherData.getString("dt")
                 val day = i
@@ -39,15 +37,15 @@ class GetOpenWeatherJsonData(private val listener: OnDataAvailable) : AsyncTask<
                 val description = jsonWeather.getJSONObject(0).getString("description")
                 val icon = jsonWeather.getJSONObject(0).getString("icon")
 
-                val weatherObject = WeatherData(latitude, longitude, date, day, currentTemp, dayTemp,
-                                                nightTemp, description, windSpeed, sunrise, sunset, icon)
+                val weatherObject = WeatherData(
+                    latitude, longitude, date, day, currentTemp, dayTemp,
+                    nightTemp, description, windSpeed, sunrise, sunset, icon
+                )
 
                 dailyWeatherList.add(weatherObject)
-                Log.d(TAG, "doInBackground $weatherObject")
             }
         } catch (e: JSONException) {
             e.printStackTrace()
-            Log.e(TAG, "doInBackground: Error processing JSON data ${e.message}")
             cancel(true)
             listener.onError(e)
         }
