@@ -11,12 +11,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,12 +28,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 //TODO: put all location related code in separate class
-//TODO: add settings
-//TODO: add option to select city and units
-//TODO: open detailed view when user click once
+//TODO: add option to select city
 //TODO: check if location is enabled on the phone
 //TODO: make animated icons
-//TODO: make location title run through toolbar like message in the bus
+//TODO: make location title run through toolbar like message in a bus
 
 private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
@@ -54,12 +50,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     private var latitude: String = "0.0"
     private var longitude: String = "0.0"
     private var units = "imperial"
+    private var isViewLongPressed: Boolean = false
     private lateinit var locationName: String
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-
-    private var aboutDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate starts")
@@ -68,7 +63,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        //units = //getString(R.string.imperial)
+        units = getString(R.string.imperial)
         locationName = getString(R.string.location_unavailable)
 
         setRecyclerView()
@@ -76,9 +71,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         getLocation()
 
-        Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
-        Log.d(TAG, "onCreate: location name = $locationName")
-        Log.d(TAG, "onCreate: units = $units")
+        //Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
+        //Log.d(TAG, "onCreate: location name = $locationName")
+        //Log.d(TAG, "onCreate: units = $units")
+        Log.d(TAG, "onCreate: temp_unit = $temp_unit")
 
         swipeLayout = findViewById(R.id.swipeContainer)
         swipeLayout.setOnRefreshListener {
@@ -89,7 +85,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         }
         Log.d(TAG, "onCreate finished")
     }
-
 
     private fun getLocation() {
         // check location permission
@@ -233,6 +228,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         recycler_view.adapter = weatherRVAdapter
         recycler_view.layoutManager = LinearLayoutManager(this)
         recycler_view.addOnItemTouchListener(RecyclerItemClickListener(this, recycler_view, this))
+        
         recycler_view.setHasFixedSize(true)
     }
 
@@ -249,12 +245,19 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     override fun onItemClick(view: View, position: Int) {
         Log.d(TAG, "onItemClick: normal tap at position $position")
-        //val weatherData = weatherRVAdapter.getWeatherData(position)
+        weatherRVAdapter.getWeatherData(position)
+        isViewLongPressed = false
     }
 
+    /*override fun onItemDoubleClick(view: View, position: Int) {
+        Log.d(TAG, "onItemDoubleClick: double tap at position $position")
+        weatherRVAdapter.getWeatherData(position)
+    }*/
 
-    override fun onItemLongClick(view: View, position: Int) {
-        Log.d(TAG, "onItemLongClick: long tap at position $position")
+    override fun onItemLongTouch(view: View, position: Int) {
+        Log.d(TAG, "onItemLongTouch: long tap at position $position")
+        weatherRVAdapter.getWeatherData(position)
+        isViewLongPressed = true
     }
 
     private fun createOpenWeatherUri(
@@ -323,20 +326,27 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                 dialog.show(supportFragmentManager, null)
                 return true
             }
-            R.id.menu_about -> showAboutDialog()
+            R.id.menu_about -> {
+                //showAboutDialog()
+                val dialog = AboutDialog()
+                dialog.show(supportFragmentManager, null)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showAboutDialog() : Boolean {
+    /*private fun showAboutDialog() : Boolean {
         Log.d(TAG, "onOptionsItemSelected: menu_about")
         val messageView = LayoutInflater.from(this).inflate(R.layout.about_dialog, null)
         val builder = AlertDialog.Builder(this).setView(messageView)
 
         builder.setTitle(R.string.app_name)
         //builder.setIcon(R.mipmap.ic_launcher)
+        //var developer : TextView = findViewById(R.id.developer)
+        //developer.movementMethod = LinkMovementMethod.getInstance()
 
         builder.setPositiveButton(R.string.ok) { _, _ ->
             Log.d(TAG, "onClick: Entering messageView.onClick")
@@ -348,26 +358,16 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         builder.show()
 
         return true
-    }
+    }*/
 
     override fun applySettings(unitsFromSettings: String) {
         Log.d(TAG, "applySettings: starts")
         units = unitsFromSettings
         Log.d(TAG, "applySettings: units = $units")
         // TODO: Convert units without using API
-        // TODO: convert time
-        if(units == "imperial") {
-            temp_unit.text = getString(R.string.fahrenheit)
-            speed_units.text = getString(R.string.miles_per_hour)
-            Log.d(TAG, "applySettings: changing text data temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
-        } else {
-            temp_unit.text = getString(R.string.celsius)
-            speed_units.text = getString(R.string.km_per_hour)
-            Log.d(TAG, "applySettings: changing text data temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
-        }
         Log.d(TAG, "applySettings: requesting api")
         requestAPI()
-        Log.d(TAG, "applySettings: exiting temp_unit = ${temp_unit.text}, speed_units = ${speed_units.text}")
+        Log.d(TAG, "applySettings: exiting temp_unit = ${temp_unit.drawable}, speed_units = ${speed_units.text}")
     }
 
     fun changeLocation(view: View) {
@@ -376,7 +376,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         dialog.show(supportFragmentManager, null)
     }
 
-    override fun applyLocationChange(newLocation: String) {
-        TODO("Not yet implemented")
+    override fun applyLocationChange(newLatitude: Double, newLongitude: Double) {
+        latitude = newLatitude.toString()
+        longitude = newLongitude.toString()
+        requestAPI()
+        getLocationName(newLatitude, newLongitude)
     }
 }

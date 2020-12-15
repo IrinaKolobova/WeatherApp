@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,9 +19,11 @@ private const val TAG = "WeatherRVAdapter"
 class WeatherDataViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var date : TextView = view.findViewById(R.id.date)
     var temperature : TextView = view.findViewById(R.id.temperature)
+    var temperatureIcon: ImageView = view.findViewById(R.id.temp_unit)
     var thumbnail : ImageView = view.findViewById(R.id.thumbnail)
     var description : TextView = view.findViewById(R.id.description)
     var wind : TextView = view.findViewById(R.id.wind_data)
+    var windUnits: TextView = view.findViewById(R.id.speed_units)
     var sunrise : TextView = view.findViewById(R.id.sunrise_data)
     var sunset : TextView = view.findViewById(R.id.sunset_data)
     var weatherLayout : ConstraintLayout = view.findViewById(R.id.weather_item_layout)
@@ -50,8 +51,7 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
         holder.date.text = SimpleDateFormat("EEE, MMM d", Locale.ENGLISH).format(Date(dayWeatherItem.date.toLong() * 1000))
         holder.description.text = dayWeatherItem.description.capitalize(Locale.getDefault())
         holder.wind.text = dayWeatherItem.windSpeed
-        holder.sunrise.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunrise.toLong()*1000))
-        holder.sunset.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunset.toLong()*1000))
+
 
         val isExtendable : Boolean = dailyWeatherDataList[position].expandable
         holder.expandableLayout.visibility = if(isExtendable) View.VISIBLE else View.GONE
@@ -62,19 +62,47 @@ class WeatherRVAdapter(private var dailyWeatherDataList: List<WeatherData>) : Re
             notifyItemChanged(position)
         }
 
-        val iconFromAPI = when(dayWeatherItem.icon) {
-            "01d" -> R.drawable.ic_01d_64px
-            "02d" -> R.drawable.ic_02d_64px
-            "03d" -> R.drawable.ic_03_64px
-            "04d" -> R.drawable.ic_04d_64px
-            "09d" -> R.drawable.ic_09_64px
-            "10d" -> R.drawable.ic_10d_64px
-            "11d" -> R.drawable.ic_11_64px
-            "13d" -> R.drawable.ic_13d_64px
-            "50d" -> R.drawable.ic_50d_64px
-            else -> R.drawable.placeholder
+        val units = SETTINGS_UNITS
+
+        if(units == "metric"){
+            holder.windUnits.setText(R.string.meters_per_second)
+            holder.temperatureIcon.setImageResource(R.drawable.ic_celsius)
+            holder.sunrise.text = SimpleDateFormat("HH:mm").format(Date(dayWeatherItem.sunrise.toLong()*1000))
+            holder.sunset.text = SimpleDateFormat("HH:mm").format(Date(dayWeatherItem.sunset.toLong()*1000))
+        } else {
+            holder.windUnits.setText(R.string.miles_per_hour)
+            holder.temperatureIcon.setImageResource(R.drawable.ic_fahrenheit)
+            holder.sunrise.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunrise.toLong()*1000))
+            holder.sunset.text = SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(dayWeatherItem.sunset.toLong()*1000))
         }
+
+        val iconFromAPI = when(dayWeatherItem.icon) {
+            "01d" -> R.drawable.ic_01d
+            "02d" -> R.drawable.ic_02d
+            "03d" -> R.drawable.ic_03
+            "04d" -> R.drawable.ic_04
+            "09d" -> R.drawable.ic_09
+            "10d" -> R.drawable.ic_10
+            "11d" -> R.drawable.ic_11
+            "13d" -> R.drawable.ic_13
+            "50d" -> R.drawable.ic_50
+            else -> R.drawable.ic_na
+        }
+
+       /*val background = when(dayWeatherItem.icon) {
+            "01d" -> R.drawable.list_item_01d
+            "02d" -> R.drawable.list_item_02d
+            "03d" -> R.drawable.list_item_03
+            "04d" -> R.drawable.list_item_04
+            "09d" -> R.drawable.list_item_09
+            "10d" -> R.drawable.list_item_10
+            "11d" -> R.drawable.list_item_11
+            "13d" -> R.drawable.list_item_13
+            "50d" -> R.drawable.list_item_50
+            else -> R.color.transparent
+        }*/
         holder.thumbnail.setImageResource(iconFromAPI)
+        //holder.weatherLayout.setBackgroundResource(background)
 
         //Picasso.with(holder.thumbnail.context).load(dayWeatherItem.icon)
         /*Picasso.get().load(dayWeatherItem.icon)

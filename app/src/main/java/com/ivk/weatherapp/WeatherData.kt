@@ -17,7 +17,7 @@ class WeatherData(
     }
 
     override fun toString(): String {
-        return "WeatherData(latitude='$latitude', longitude='$longitude', date='$date', day=$day, " +
+        return "WeatherData(latitude='$latitude', longitude='$longitude', date='$date', day=$day, "+
                 "currentTemp='$currentTemp', dayTemp='$dayTemp', nightTemp='$nightTemp', " +
                 "description='$description', windSpeed='$windSpeed', sunrise='$sunrise', " +
                 "sunset='$sunset', icon='$icon')"

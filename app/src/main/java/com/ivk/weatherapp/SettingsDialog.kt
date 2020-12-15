@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
 import kotlinx.android.synthetic.main.settings_dialog.*
+import kotlinx.android.synthetic.main.weekday_list_items.*
 import java.util.*
 
 private const val TAG = "SettingsDialog"
@@ -114,9 +115,9 @@ class SettingsDialog(var listener: SettingsDialogListener) : AppCompatDialogFrag
     private fun saveValues() {
         Log.d(TAG, "saveValues: called")
         val newUnits = if (switch_units.isChecked) {
-            switch_units.textOn.toString()
+            "metric"
         } else {
-            switch_units.textOff.toString()
+            "imperial"
         }
 
         val newSwitchStatus = switch_units.isChecked
