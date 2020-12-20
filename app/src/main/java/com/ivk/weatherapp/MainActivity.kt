@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,7 +32,6 @@ import kotlin.collections.ArrayList
 //TODO: make animated icons
 //TODO: make location title run through toolbar like message in a bus
 
-private const val TAG = "MainActivity"
 private val weatherRVAdapter = WeatherRVAdapter(ArrayList())
 
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
@@ -57,7 +55,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     private lateinit var locationRequest: LocationRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate starts")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
@@ -76,88 +73,54 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             units = savedInstanceState.getString("units").toString()
             locationName = savedInstanceState.getString("locationName").toString()
             toolbar.locationName.text = getString(R.string.location_name, locationName)
-            Log.d(TAG, "onCreate savedInstanceState: latitude = $latitude, longitude = $longitude, units = $units, locationName = $locationName")
         } else {
             getLocation()
         }
-        //Log.d(TAG, "onCreate: latitude = $latitude, LONGITUDE = $longitude")
-        //Log.d(TAG, "onCreate: location name = $locationName")
-        //Log.d(TAG, "onCreate: units = $units")
-        Log.d(TAG, "onCreate: temp_unit = $temp_unit")
 
         swipeLayout = findViewById(R.id.swipeContainer)
         swipeLayout.setOnRefreshListener {
-            Log.d(TAG, "onCreate: refreshing layout")
             getNewLocation()
             applySettings(units)
             swipeLayout.isRefreshing = false
         }
-        Log.d(TAG, "onCreate finished")
     }
 
     private fun getLocation() {
         // check location permission
-        Log.d(TAG, "getLastLocation: calling checkPermission()")
         if (checkPermission()) {
-            Log.d(TAG, "getLastLocation: location permission is granted")
             // check if location service is enabled
             if (isLocationEnabled()) {
-                Log.d(TAG, "getLastLocation: location service is enabled")
                 // get the location
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
                     val location: Location? = task.result
 
                     if (location == null) {
                         // if location is null get the new user's location
-                        Log.d(TAG, "getLastLocation: location is null, getting new user's location")
                         getNewLocation()
-                        Log.d(
-                            TAG,
-                            "getLastLocation: before getNewLocation() latitude = $latitude, longitude = $longitude"
-                        )
                         latitude = location?.latitude.toString()
                         longitude = location?.longitude.toString()
-                        Log.d(
-                            TAG,
-                            "getLastLocation: after getNewLocation() latitude = $latitude, longitude = $longitude"
-                        )
                         requestAPI()
                     } else {
                         // set latitude and longitude
-                        Log.d(
-                            TAG,
-                            "getLastLocation: before setting data latitude = $latitude, longitude = $longitude"
-                        )
                         latitude = location.latitude.toString()
                         longitude = location.longitude.toString()
                         locationName = getLocationName(location.latitude, location.longitude)
-                        Log.d(
-                            TAG,
-                            "getLastLocation: after setting data latitude = $latitude, longitude = $longitude"
-                        )
-                        Log.d(
-                            TAG,
-                            "getLastLocation: after setting data location name = $locationName"
-                        )
                         requestAPI()
                     }
                 }
             } else {
                 //ask user to enable location services
-                Log.d(TAG, "getLastLocation: asking user to enable location services")
                 //TODO: change to snackbar
                 Toast.makeText(this, "Please enable your location", Toast.LENGTH_LONG).show()
             }
         } else {
             // ask for location permission
-            Log.d(TAG, "getLastLocation: asking user for location permission")
             requestPermission()
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun getNewLocation() {
-        Log.d(TAG, "getNewLocation: started")
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
@@ -168,28 +131,20 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             locationCallback,
             Looper.myLooper()
         )
-        Log.d(TAG, "getNewLocation: finished")
     }
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            Log.d(TAG, "locationCallback: onLocationResult started")
             val newLocation = locationResult.locations[0]
-            Log.d(TAG, "locationCallback: before setting new data latitude = $latitude, longitude = $longitude")
             // set new location
             latitude = newLocation.latitude.toString()
             longitude = newLocation.longitude.toString()
             locationName = getLocationName(newLocation.latitude, newLocation.longitude)
-            Log.d(
-                TAG,
-                "getLastLocation: new location were set latitude = $latitude, longitude = $longitude"
-            )
             requestAPI()
         }
     }
 
     private fun checkPermission(): Boolean {
-        Log.d(TAG, "checkPermission: checking location permission")
         return ActivityCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -201,7 +156,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private fun requestPermission() {
-        Log.d(TAG, "requestPermission: requesting location permission")
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -226,8 +180,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     ) {
         if (requestCode == PERMISSION_ID) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: location permission granted")
-                Log.d(TAG, "onRequestPermissionsResult: getting new location via getNewLocation()")
                 getNewLocation()
             }
         }
@@ -242,7 +194,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private fun requestAPI() {
-        Log.d(TAG, "requestAPI: latitude = $latitude, longitude = $longitude, units = $units")
         val openWeatherUrl = createOpenWeatherUri(
             OPEN_WEATHER_MAP_BASE_URL,
             latitude, longitude, units,
@@ -253,18 +204,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun onItemClick(view: View, position: Int) {
-        Log.d(TAG, "onItemClick: normal tap at position $position")
         weatherRVAdapter.getWeatherData(position)
         isViewLongPressed = false
     }
 
-    /*override fun onItemDoubleClick(view: View, position: Int) {
-        Log.d(TAG, "onItemDoubleClick: double tap at position $position")
-        weatherRVAdapter.getWeatherData(position)
-    }*/
-
     override fun onItemLongTouch(view: View, position: Int) {
-        Log.d(TAG, "onItemLongTouch: long tap at position $position")
         weatherRVAdapter.getWeatherData(position)
         isViewLongPressed = true
     }
@@ -274,7 +218,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         longitude: String, units: String,
         exclude: String, key: String
     ): String {
-        Log.d(TAG, "createOpenWeatherUri: latitude = $latitude, longitude = $longitude, units = $units")
         return Uri.parse(baseURL).buildUpon().appendQueryParameter("lat", latitude)
             .appendQueryParameter("lon", longitude).appendQueryParameter("units", units)
             .appendQueryParameter("exclude", exclude).appendQueryParameter("appid", key).build()
@@ -285,18 +228,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         if (status == DownloadStatus.OK) {
             val getOpenWeatherJsonData = GetOpenWeatherJsonData(this)
             getOpenWeatherJsonData.execute(data)
-        } else {
-            Log.d(TAG, "onDownloadComplete failed: status is $status, error message is $data")
         }
     }
 
     override fun onDataAvailable(data: List<WeatherData>) {
-        Log.d(TAG, "onDataAvailable called, data is $data")
         weatherRVAdapter.loadNewData(data)
     }
 
     override fun onError(exception: Exception) {
-        Log.e(TAG, "onError called with ${exception.message}")
     }
 
 
@@ -308,7 +247,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         val countryName = address.get(0).countryName
         locationName = "$cityName, $stateName"
 
-        Log.d(TAG, "getLocationName: locationName = $locationName")
         toolbar.locationName.text = getString(R.string.location_name, locationName)
         return locationName
     }
@@ -325,13 +263,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.menu_settings -> {
-                Log.d(TAG, "onOptionsItemSelected: menu_settings")
                 val dialog = SettingsDialog(this)
                 dialog.show(supportFragmentManager, null)
                 return true
             }
             R.id.menu_changeLocation -> {
-                Log.d(TAG, "onOptionsItemSelected: menu_changeLocation")
                 val dialog = LocationChangeDialog(this)
                 dialog.show(supportFragmentManager, null)
                 return true
@@ -349,17 +285,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun applySettings(unitsFromSettings: String) {
-        Log.d(TAG, "applySettings: starts")
         units = unitsFromSettings
-        Log.d(TAG, "applySettings: units = $units")
         // TODO: Convert units without using API
-        Log.d(TAG, "applySettings: requesting api")
         requestAPI()
-        Log.d(TAG, "applySettings: exiting temp_unit = ${temp_unit.drawable}, speed_units = ${speed_units.text}")
     }
 
     fun changeLocation(view: View) {
-        // TODO: fill LocationChangeDialog class
         val dialog = LocationChangeDialog(this)
         dialog.show(supportFragmentManager, null)
     }
@@ -373,11 +304,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.d(TAG, "onSaveInstanceState: called")
         outState.putString("latitude", latitude)
         outState.putString("longitude", longitude)
         outState.putString("units", units)
         outState.putString("locationName", locationName)
-        Log.d(TAG, "onSaveInstanceState: latitude = $latitude, longitude = $longitude, units = $units, locationName = $locationName")
     }
 }

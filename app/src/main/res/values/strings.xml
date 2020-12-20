@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather App</string>
+    <string name="app_name">Weather Forecast</string>
     <string name="weather_image_description">Downloaded weather description</string>
     <string name="title_activity_detailed_weather">DetailedWeatherActivity</string>
     <string name="next">Next</string>
@@ -15,7 +15,7 @@
     <string name="meters_per_second">m/s</string>
     <string name="location_icon">location icon</string>
     <string name="location_name">%1$s</string>
-    <string name="menu_changeLocation">Change location</string>
+    <string name="menu_changeLocation">Change location</string>s
     <string name="menu_settings">Change units</string>
     <string name="menu_about">About this App</string>
     <string name="location_change">Select new location</string>
@@ -29,6 +29,7 @@
     <string name="developer">Developer: <a href="http://www.linkedin.com/in/irina-kolobova">Irina Kolobova</a></string>
     <string name="linkedin_web_url">LinkedIn: </string>
     <string name="icons_credits">Icons designed by <a href="http://www.freepik.com">Freepik</a></string>
+    <string name="forecast_credits">Forecast info provided by <a href="https://openweathermap.org/api">OpenWeather</a></string>
     <string name="temp_unit">temperature unit</string>
 
 </resources>

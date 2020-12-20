@@ -44,6 +44,17 @@
         app:layout_constraintTop_toBottomOf="@+id/developer" />
 
     <TextView
+        android:id="@+id/forecast_credits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:linksClickable="true"
+        android:text="@string/forecast_credits"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="@+id/developer_email"
+        app:layout_constraintTop_toBottomOf="@+id/developer_email" />
+
+    <TextView
         android:id="@+id/icons_credits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,15 +62,15 @@
         android:linksClickable="true"
         android:text="@string/icons_credits"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintStart_toStartOf="@+id/developer_email"
-        app:layout_constraintTop_toBottomOf="@+id/developer_email" />
+        app:layout_constraintStart_toStartOf="@+id/forecast_credits"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_credits" />
 
     <Button
         android:id="@+id/about_okButton"
         style="?attr/buttonBarNegativeButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="@string/ok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/icons_credits" />

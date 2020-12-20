@@ -20,6 +20,9 @@ class AboutDialog : AppCompatDialogFragment() {
         developer.setText(R.string.developer)
         developer.movementMethod = LinkMovementMethod.getInstance()
 
+        forecast_credits.setText(R.string.forecast_credits)
+        forecast_credits.movementMethod = LinkMovementMethod.getInstance()
+
         icons_credits.setText(R.string.icons_credits)
         icons_credits.movementMethod = LinkMovementMethod.getInstance()
     }
